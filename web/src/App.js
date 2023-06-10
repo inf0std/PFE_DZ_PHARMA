@@ -1,17 +1,20 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route
-          path="/"
+          path="world"
           element={
             <div>
               <p>hello world</p>
+              <Outlet />
             </div>
           }
-        />
+        >
+          <Route path="faicel" element={<p>faicel</p>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
