@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "ahcene faicel",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "convert-excel-to-json": "^1.7.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
