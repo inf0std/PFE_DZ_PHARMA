@@ -1,0 +1,1 @@
+const PharmaciesPage = (props) => {};

@@ -1,3 +1,3 @@
-const medicaments = require("../../../models/medicament");
-
-console.log(medicaments.medicaments[0]);
+const handleCreate = (req, res) => {
+  let med = { ...req.body };
+};

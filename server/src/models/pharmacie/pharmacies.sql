@@ -1,0 +1,4 @@
+INSERT INTO PHARMACIES(name, coordinates, adress) VALUES ('Pharmacie IDIR', POINT(36.58784075241545, 3.772449653739724), 'tizi ghenif');
+INSERT INTO PHARMACIES(name, coordinates, adress) VALUES ('Pharmacie CHIRIFI', POINT(36.588153788055465, 3.7764017343422367), 'tizi ghenif');
+
+INSERT INTO PHARMACIES(name, coordinates, adress) VALUES ('Pharmacie HAMNACHE', POINT(36.587560963164535, 3.774762126687732), 'tizi ghenif');
