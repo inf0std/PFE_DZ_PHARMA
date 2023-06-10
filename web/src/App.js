@@ -4,7 +4,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="user" element={<UsersPage />}>
+        <Route path="/" element={<UsersPage />}>
           {/* 
           <Route path="faicel" element={<p>faicel</p>} /> */}
         </Route>
