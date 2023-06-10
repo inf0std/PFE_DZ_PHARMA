@@ -5,7 +5,7 @@ const placeHolder = (req, res) => {};
 const apiRouter = express.Router();
 
 //pour recuperer les pharmacies
-apiRouter.get("/pharmacies", placeHolder);
+apiRouter.get("/pharmacies", pharmaHandler.handleListPharmacies);
 
 //recuperer les details d'une pharmacie
 apiRouter.get("/pharmacies/:id", placeHolder);
