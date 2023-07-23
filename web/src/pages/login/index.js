@@ -10,10 +10,31 @@ import {
   Container,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+import { login } from "../../service/auth";
+import { useDispatch } from "react-redux";
 const LoginPage = () => {
-  const { control, register, getValues, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {
+    control,
+    register,
+    getValues,
+    handleSubmit,
+    formState: { isDirty, errors },
+  } = useForm();
+
+  const submit = (values) => {
+    dispatch(login(values))
+      .unwrap()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   return (
     <Container fluid>
       <Row
@@ -29,19 +50,60 @@ const LoginPage = () => {
               <Card.Body className="py-5 px-5">
                 <Form>
                   <Stack gap={2}>
-                    <InputGroup>
-                      <InputGroup.Text>@</InputGroup.Text>
-                      <Form.Control type="text" {...register("email")} />
-                    </InputGroup>
+                    <Form.Group>
+                      <InputGroup>
+                        <InputGroup.Text>@</InputGroup.Text>
+                        <Form.Control
+                          type="email"
+                          placeholder="email@exemple.com"
+                          {...register("email", {
+                            required: { value: true, message: "obligatoire*" },
+                            pattern: {
+                              value:
+                                /^[0-9a-zA-Z._-]+@[0-9a-zA-Z.]+.[0-9a-zA-Z]$/,
+                              message: "mauvais format",
+                            },
+                          })}
+                        />
+                      </InputGroup>
+                      <span className="text-danger">
+                        {errors?.email?.message}
+                      </span>
+                    </Form.Group>
+                    <Form.Group>
+                      <InputGroup>
+                        <InputGroup.Text>
+                          <KeyFill />
+                        </InputGroup.Text>
+                        <Form.Control
+                          type="password"
+                          {...register("password", {
+                            required: { value: true, message: "obligatoire*" },
+                            minLength: {
+                              value: 8,
+                              message: "longeur minale 8*",
+                            },
+                            pattern: {
+                              value:
+                                /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).+$/,
+                              message:
+                                "doit avoire: 1 caracter speciale, 1 majuscule, 1 minuscule et 1 chiffre*",
+                            },
+                          })}
+                        />
+                      </InputGroup>
+                      <span className="text-danger">
+                        {errors?.password?.message}
+                      </span>
+                    </Form.Group>
 
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <KeyFill />
-                      </InputGroup.Text>
-                      <Form.Control type="password" {...register("password")} />
-                    </InputGroup>
                     <Stack gap={2}>
-                      <Button variant="outline-success">Se Connecter</Button>
+                      <Button
+                        variant="outline-success"
+                        onClick={handleSubmit(submit)}
+                      >
+                        Se Connecter
+                      </Button>
                       <p className="text-center w-100">
                         <strong>Vous n'avez pas encore de compte? </strong>
                         <Link to={"/signup"} className="text-success">

@@ -5,7 +5,7 @@ export const login = createAsyncThunk(
   async ({ email, password }, thunkAPI) => {
     try {
       console.log(thunkAPI);
-      let result = await fetch(API_AUTH_URL + "/signin", {
+      let response = await fetch(API_AUTH_URL + "/signin", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -16,12 +16,12 @@ export const login = createAsyncThunk(
           password,
         }),
       });
-      console.log(result);
+      console.log(response);
       let data = response.json();
 
       return response.status == 200 ? data : thunkAPI.rejectWithValue(data);
     } catch (e) {
-      return thunkAPI.rejectWithValue(e.response.data);
+      return thunkAPI.rejectWithValue(e);
     }
   }
 );
@@ -51,6 +51,9 @@ export const signup = createAsyncThunk(
     { firstname, lastname, birth_date, email, password, password2 },
     thunkAPI
   ) => {
+    console.log(thunkAPI);
+
+    console.log(firstname, lastname, email, password, password2, birth_date);
     try {
       let response = await fetch(API_AUTH_URL + "/signup", {
         method: "POST",
@@ -70,7 +73,7 @@ export const signup = createAsyncThunk(
       let data = await response.json();
       return response.status == 200 ? data : thunkAPI.rejectWithValue(data);
     } catch (e) {
-      return thunkAPI(e.response.data);
+      return thunkAPI.rejectWithValue(e);
     }
   }
 );
@@ -99,9 +102,9 @@ export const authSlice = createSlice({
       .addCase(login.rejected, (state) => {
         state.value = { ...initialState.value };
       })
-      .addCase(login.rejectWithValue, (state, { payload }) => {
+      /* .addCase(login.rejectWithValue, (state, { payload }) => {
         state.value = { ...payload };
-      })
+      }) */
       .addCase(logout.pending, (state) => {
         state.value.logoutPending = true;
       })
@@ -111,9 +114,9 @@ export const authSlice = createSlice({
       .addCase(logout.rejected, (state) => {
         state.value.logoutFailed = true;
       })
-      .addCase(logout.rejectWithValue, (state, { payload }) => {
+      /* .addCase(logout.rejectWithValue, (state, { payload }) => {
         state.value = { ...payload };
-      })
+      }) */
       .addCase(signup.pending, (state) => {
         state.value.signupPending = true;
       })
@@ -122,10 +125,10 @@ export const authSlice = createSlice({
       })
       .addCase(signup.rejected, (state, { payload }) => {
         state.value = { ...payload };
-      })
-      .addCase(signup.rejectWithValue, (state, { payload }) => {
-        state.value = { ...payload };
       });
+    /* .addCase(signup.rejectWithValue, (state, { payload }) => {
+        state.value = { ...payload };
+      }); */
   },
 });
 

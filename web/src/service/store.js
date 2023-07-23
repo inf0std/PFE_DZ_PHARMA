@@ -1,15 +1,33 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
-import { userApi } from "./api/usersApi";
+import thunk from "redux-thunk";
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from "redux-persist";
 
-const store = configureStore({
+import authReducer from "./auth";
+import paginationReducer from "./slices/pagination";
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whiteList: ["auth", "pagination"],
+  blackList: [],
+};
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  pagination: paginationReducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+export const store = configureStore({
   reducer: {
-    [userApi.reducerPath]: userApi.reducer,
+    persistedReducer,
+    //[userApi.reducerPath]: userApi.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware),
+  middleware: [thunk],
 });
 
 setupListeners(store.dispatch);
 
-export default store;
+export const persistor = persistStore(store);

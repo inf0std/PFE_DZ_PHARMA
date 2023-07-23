@@ -13,15 +13,30 @@ import {
   ToastContainer,
 } from "react-bootstrap";
 import { Calendar, KeyFill } from "react-bootstrap-icons";
+import { useDispatch } from "react-redux";
+import { signup } from "../../service/auth";
+import { useNavigate } from "react-router";
 
 const SignupPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const {
+    handleSubmit,
     control,
     getValues,
     register,
     setValue,
     formState: { isDIrty, errors },
   } = useForm({ mode: "onBlur", reValidateMode: "onChange" });
+  const submit = (values) => {
+    dispatch(signup(values))
+      .unwrap()
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((e) => console.log(e));
+  };
   return (
     <>
       <Container fluid>
@@ -195,12 +210,7 @@ const SignupPage = () => {
                       </span>
                     </Form.Group>
                     <br />
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        console.log("subscribing");
-                      }}
-                    >
+                    <Button variant="primary" onClick={handleSubmit(submit)}>
                       S'inscrire
                     </Button>
                     <p className="text-center">
@@ -209,7 +219,7 @@ const SignupPage = () => {
                         //variant="link"
                         className="text-link"
                         onClick={() => {
-                          console.log("navigating to signin page");
+                          navigate("/login");
                         }}
                       >
                         se connecter.

@@ -9,9 +9,11 @@ const paginationSLice = createSlice({
   initialState,
   reducers: {
     setUserPagination: (state, { payload }) => {
-      state.user = { ...payload };
+      state.user = { ...state.user, ...payload };
     },
     nextUserPage: (state) => {
+      const { page } = state.user;
+
       state.user = { ...state.user, page: page + 1 };
     },
     previousUserPage: (state) => {
@@ -20,7 +22,7 @@ const paginationSLice = createSlice({
         state.user = { ...state.user, page: currentPage - 1 };
     },
     setPharmacyPagination: (state, { payload }) => {
-      state.pharmacy = { ...payload };
+      state.pharmacy = { ...state.pharmacy, ...payload };
     },
     nextPharmacyPage: (state) => {
       const { page: currentPage } = state.pharmacy;
@@ -32,7 +34,7 @@ const paginationSLice = createSlice({
         state.pharmacy = { ...state.pharmacy, page: currentPage - 1 };
     },
     setMedicinePagination: (state, { payload }) => {
-      state.medicine = { ...state.payload };
+      state.medicine = { ...state.medicine, ...payload };
     },
     nextMedicinePage: (state) => {
       const { page: currentPage } = state.medicine;
