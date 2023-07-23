@@ -7,12 +7,14 @@ import {
   Dashboard,
   SinglePharmacyPage,
   SingleUserPage,
+  SignupPage,
 } from "./pages";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/Login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />}>
           <Route path="" exact element={<></>} />
           <Route path="pharmacies" exact element={<PharmaciesPage />} />

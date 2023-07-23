@@ -5,7 +5,9 @@ import Dashboard from "./dasboard";
 import MedicinesPage from "./medicines";
 import SinglePharmacyPage from "./pharmacy";
 import PharmaciesPage from "./pharmacies";
+import SignupPage from "./signup";
 export {
+  SignupPage,
   LoginPage,
   UsersPage,
   SinglePharmacyPage,
