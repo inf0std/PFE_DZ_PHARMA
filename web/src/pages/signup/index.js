@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   Button,
+  ToastContainer,
 } from "react-bootstrap";
 import { Calendar, KeyFill } from "react-bootstrap-icons";
 
@@ -24,7 +25,7 @@ const SignupPage = () => {
   return (
     <>
       <Container fluid>
-        {" "}
+        <ToastContainer position="top-end"></ToastContainer>
         <Row
           className="align-items-center justify-content-center"
           style={{ height: "100vh" }}
