@@ -5,6 +5,10 @@
 module.exports = handleRegister;*/
 const mysql = require("mysql2");
 const validator = require("validator");
+
+// Génération du jeton d'authentification
+const jwt = require("jsonwebtoken");
+
 // registerHandler.js
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
@@ -57,12 +61,10 @@ function handleRegister(req, res) {
 
   if (!validator.isAlphanumeric(username)) {
     // Gestion de l'erreur de validation du nom d'utilisateur
-    return res
-      .status(400)
-      .json({
-        error:
-          "Le nom d'utilisateur ne doit contenir que des lettres et des chiffres",
-      });
+    return res.status(400).json({
+      error:
+        "Le nom d'utilisateur ne doit contenir que des lettres et des chiffres",
+    });
   }
 
   //Vérification de l'existence de l'utilisateur
@@ -74,12 +76,10 @@ function handleRegister(req, res) {
     (error, results) => {
       if (error) {
         // Gestion de l'erreur de base de données
-        return res
-          .status(500)
-          .json({
-            error:
-              "Erreur lors de la vérification de l'existence de l'utilisateur",
-          });
+        return res.status(500).json({
+          error:
+            "Erreur lors de la vérification de l'existence de l'utilisateur",
+        });
       }
 
       if (results.length > 0) {
@@ -121,9 +121,6 @@ function handleRegister(req, res) {
     // Le mot de passe est correctement haché, continuez le processus d'inscription
     // ...
   });
-
-  // Génération du jeton d'authentification
-  const jwt = require("jsonwebtoken");
 
   // ...
   const secretKey = "your-secret-key";
