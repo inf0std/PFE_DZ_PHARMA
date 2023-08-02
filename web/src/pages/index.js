@@ -6,6 +6,7 @@ import MedicinesPage from "./medicines";
 import SinglePharmacyPage from "./pharmacy";
 import PharmaciesPage from "./pharmacies";
 import SignupPage from "./signup";
+import HomePage from "./home";
 export {
   SignupPage,
   LoginPage,
@@ -15,4 +16,5 @@ export {
   MedicinesPage,
   Dashboard,
   PharmaciesPage,
+  HomePage,
 };

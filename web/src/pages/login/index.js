@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { login } from "../../service/auth";
 import { useDispatch } from "react-redux";
-const LoginPage = () => {
+const LoginPage = ({ notify }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
@@ -30,9 +30,26 @@ const LoginPage = () => {
       .unwrap()
       .then((result) => {
         console.log(result);
+        return notify({ type: "success", message: "Connexion reussie" });
       })
       .catch((e) => {
         console.log(e);
+        if (e?.code && e?.code >= 500)
+          return notify({
+            type: "error",
+            message:
+              "une erreur c'est produite lors de la connexion \n veuillez rééssayer plustard",
+          });
+        if (e?.status && e?.status == 401)
+          return notify({
+            type: "error",
+            message: "COnnexion echouée, Email et/ou mot de passe non valide",
+          });
+        notify({
+          type: "error",
+          message:
+            "Connexion échouée, impossible d'établir la liaison avec le serveur, veuillez verifier votre connexion internet",
+        });
       });
   };
   return (

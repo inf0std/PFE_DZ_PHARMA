@@ -17,7 +17,7 @@ import { useDispatch } from "react-redux";
 import { signup } from "../../service/auth";
 import { useNavigate } from "react-router";
 
-const SignupPage = () => {
+const SignupPage = ({ notify }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,8 +34,18 @@ const SignupPage = () => {
       .unwrap()
       .then((result) => {
         console.log(result);
+        notify({ type: "success", message: "inscription réussie" });
+        navigate("/dashboard");
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+
+        notify({
+          type: "error",
+          message:
+            "inscription échouée, une erreur s'est produite lors de l'inscritpion",
+        });
+      });
   };
   return (
     <>

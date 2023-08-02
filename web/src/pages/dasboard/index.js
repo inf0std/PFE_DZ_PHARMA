@@ -1,5 +1,12 @@
+import { Container } from "react-bootstrap";
+import DashNavbar from "./components/navbar";
+
 const Dashboard = () => {
-  return <></>;
+  return (
+    <Container fluid>
+      <DashNavbar />
+    </Container>
+  );
 };
 
 export default Dashboard;
