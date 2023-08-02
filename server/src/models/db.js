@@ -1,14 +1,15 @@
-const knex = require("knex");
+require("dotenv").config();
 
-module.exports = {
-  getConnection: () =>
-    knex({
-      client: "mysql2",
-      connection: {
-        host: "localhost",
-        user: "root",
-        password: "",
-        database: "pharma_dz",
-      },
-    }),
-};
+module.exports = (() => {
+  //estabilishing connection to the postgresql dbms
+  const db = require("knex")({
+    client: "pg",
+    connection: {
+      host: "localhost",
+      user: "postgres",
+      password: "",
+      database: "knex-test",
+    },
+  });
+  return db;
+})();
