@@ -18,6 +18,8 @@ const apiV1Router = require("./src/api/v1");
 const db = require("./src/models/db");
 
 const app = express();
+
+//midlewares
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cors());
