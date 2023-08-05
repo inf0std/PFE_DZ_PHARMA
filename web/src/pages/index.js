@@ -7,6 +7,7 @@ import SinglePharmacyPage from "./pharmacy";
 import PharmaciesPage from "./pharmacies";
 import SignupPage from "./signup";
 import HomePage from "./home";
+import CreatePharmacy from "./pharmacies/createPharmacy";
 export {
   SignupPage,
   LoginPage,

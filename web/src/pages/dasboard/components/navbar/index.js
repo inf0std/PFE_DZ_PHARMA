@@ -1,9 +1,10 @@
 import { Container, Nav, Navbar, Row, Col } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 import Clock from "../../../../componant/clock";
 //import "./navbar.css";
 const DashNavbar = () => {
+  const location = useLocation();
   return (
     <>
       <Navbar expand="md" bg="dark" data-bs-theme="dark">

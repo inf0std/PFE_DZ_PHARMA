@@ -33,22 +33,49 @@ function App() {
         <Route path="/Login" element={<LoginPage notify={notify} />} />
         <Route path="/signup" element={<SignupPage notify={notify} />} />
         <Route path="/dashboard" element={<Dashboard notify={notify} />}>
-          <Route path="" exact element={<></>} />
           <Route
-            path="pharmacies"
             exact
+            path="pharmacies"
             element={<PharmaciesPage notify={notify} />}
-          />
-          <Route
-            path="pharmacies/{id}"
-            element={<SinglePharmacyPage notify={notify} />}
-          />
-          <Route path="users" exact element={<UsersPage notify={notify} />} />
-          <Route
-            path="users/{id}"
-            element={<SingleUserPage notify={notify} />}
-          />
-          <Route path="medicines" element={<MedicinesPage notify={notify} />} />
+          >
+            <Route
+              exact
+              path="create"
+              element={<CreatePharmacy notify={notify} />}
+            />
+            <Route
+              path="edit/{id}"
+              element={<EditPharmacy notify={notify} />}
+            />
+            <Route
+              exact
+              path="{id}"
+              element={<SinglePharmacyPage notify={notify} />}
+            />
+          </Route>
+
+          <Route path="users" exact element={<UsersPage notify={notify} />}>
+            <Route path="{id}" element={<SingleUserPage notify={notify} />} />
+            <Route
+              exact
+              path="create"
+              element={<CreateUser notify={notify} />}
+            />
+            <Route path="edit/{id}" element={<EditUser notify={notify} />} />
+          </Route>
+
+          <Route path="medicines" element={<MedicinesPage notify={notify} />}>
+            <Route
+              exact
+              path="create"
+              element={<CreateMedicine notify={notify} />}
+            />
+            <Route
+              path="edit/{id}"
+              element={<EditMedicine notify={notify} />}
+            />
+            <Route path="{id}" element={<SingleMedicine notify={notify} />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
