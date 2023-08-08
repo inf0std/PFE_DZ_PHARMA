@@ -25,7 +25,7 @@ const handleCreatePharmacy = (req, res) => {
     });
 };
 
-handleListPharmacies = (req, res) => {
+const handleListPharmacies = (req, res) => {
   let con = db.getConnection();
   con("pharmacies")
     .select("*")
