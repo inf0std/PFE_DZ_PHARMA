@@ -3,6 +3,7 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const host = "http://localhost:8000";
 const baseUrl = "api/v1";
+
 const signin = createAsyncThunk(
   "auth/singin",
   async ({ email, password }, thunkAPI) => {
@@ -94,7 +95,11 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    login: (state, action) => {
+      state.data = action.payload.data;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(signin.pending, (state) => {
@@ -128,3 +133,11 @@ const authSlice = createSlice({
       });
   },
 });
+// Export the action creators
+export const { login } = authSlice.actions;
+
+// Export the async thunks
+export { signin, signout, signup };
+
+// Export the reducer
+export default authSlice.reducer;
