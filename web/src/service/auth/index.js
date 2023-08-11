@@ -1,27 +1,27 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { API_AUTH_URL } from "../../assets/constants";
+import axios from "axios"; // Import axios
+
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }, thunkAPI) => {
+    console.log("444444444444", email, password);
     try {
       console.log(thunkAPI);
-      let response = await fetch(API_AUTH_URL + "/signin", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      // Use axios instead of fetch
+      let response = await axios.post(`${API_AUTH_URL}/SignIn`, {
+        email,
+        password,
       });
-      console.log(response);
-      let data = response.json();
+      console.log(response.data);
 
-      return response.status == 200 ? data : thunkAPI.rejectWithValue(data);
+      // axios automatically parses the response data, so you don't need response.json()
+      let data = response.data;
+
+      return response.status === 200 ? data : thunkAPI.rejectWithValue(data);
     } catch (e) {
-      return thunkAPI.rejectWithValue(e);
+      return console.log(e);
+      // thunkAPI.rejectWithValue(e);
     }
   }
 );

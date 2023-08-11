@@ -1,0 +1,39 @@
+import React, { useState } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { Button, Alert } from "react-bootstrap";
+
+const Map = () => {
+  const [position, setPosition] = useState(null);
+
+  const MapClickHandler = () => {
+    useMapEvents({
+      click(e) {
+        setPosition(e.latlng);
+      },
+    });
+
+    return null;
+  };
+
+  return (
+    <div>
+      <MapContainer
+        center={[0, 0]}
+        zoom={2}
+        style={{ height: "400px", width: "100%" }}>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <MapClickHandler />
+        {position && <Marker position={position} />}
+      </MapContainer>
+
+      {position && (
+        <Alert variant="success">
+          Latitude: {position.lat.toFixed(6)}, Longitude:{" "}
+          {position.lng.toFixed(6)}
+        </Alert>
+      )}
+    </div>
+  );
+};
+
+export default Map;

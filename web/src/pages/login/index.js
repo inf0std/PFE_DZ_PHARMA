@@ -30,6 +30,11 @@ const LoginPage = ({ notify }) => {
       .unwrap()
       .then((result) => {
         console.log(result);
+        sessionStorage.setItem("userId", result.user.user_id); // Assuming the user user_id is available in the result
+
+        // Navigate to SingleUserPage with the user's user_id as a parameter
+        navigate(`/Profil/${result.user.user_id}`);
+
         return notify({ type: "success", message: "Connexion reussie" });
       })
       .catch((e) => {
@@ -56,8 +61,7 @@ const LoginPage = ({ notify }) => {
     <Container fluid>
       <Row
         className="align-items-center justify-content-center"
-        style={{ height: "100vh" }}
-      >
+        style={{ height: "100vh" }}>
         <Col md={5}>
           <Card className="border-0 shadow">
             <Card.Header>
@@ -74,12 +78,12 @@ const LoginPage = ({ notify }) => {
                           type="email"
                           placeholder="email@exemple.com"
                           {...register("email", {
-                            required: { value: true, message: "obligatoire*" },
+                            /*    required: { value: true, message: "obligatoire*" },
                             pattern: {
                               value:
                                 /^[0-9a-zA-Z._-]+@[0-9a-zA-Z.]+.[0-9a-zA-Z]$/,
                               message: "mauvais format",
-                            },
+                            },*/
                           })}
                         />
                       </InputGroup>
@@ -95,7 +99,7 @@ const LoginPage = ({ notify }) => {
                         <Form.Control
                           type="password"
                           {...register("password", {
-                            required: { value: true, message: "obligatoire*" },
+                            /*  required: { value: true, message: "obligatoire*" },
                             minLength: {
                               value: 8,
                               message: "longeur minale 8*",
@@ -105,7 +109,7 @@ const LoginPage = ({ notify }) => {
                                 /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).+$/,
                               message:
                                 "doit avoire: 1 caracter speciale, 1 majuscule, 1 minuscule et 1 chiffre*",
-                            },
+                            },*/
                           })}
                         />
                       </InputGroup>
@@ -117,8 +121,7 @@ const LoginPage = ({ notify }) => {
                     <Stack gap={2}>
                       <Button
                         variant="outline-success"
-                        onClick={handleSubmit(submit)}
-                      >
+                        onClick={handleSubmit(submit)}>
                         Se Connecter
                       </Button>
                       <p className="text-center w-100">
