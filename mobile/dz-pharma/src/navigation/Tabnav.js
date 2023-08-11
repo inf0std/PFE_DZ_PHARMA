@@ -77,15 +77,6 @@ const BottomTabNavigator = () => {
         headerRightContainerStyle: { marginRight: 20 },
       }}>
       {/* Profil screen */}
-      <Tab.Screen
-        name="Profil"
-        component={Profil}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" color={color} size={size} />
-          ),
-        }}
-      />
 
       {/* Search screen */}
       <Tab.Screen
@@ -93,7 +84,7 @@ const BottomTabNavigator = () => {
         component={SearchScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-outline" color={color} size={size} />
+            <Ionicons name="search-outline" color="#50e3c2" size={size} />
           ),
         }}
       />
@@ -104,7 +95,16 @@ const BottomTabNavigator = () => {
         component={MapScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="map-outline" color={color} size={size} />
+            <Ionicons name="map-outline" color="#50e3c2" size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profil"
+        component={Profil}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" color="#50e3c2" size={size} />
           ),
         }}
       />

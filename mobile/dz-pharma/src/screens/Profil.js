@@ -7,9 +7,8 @@ import FadeIn from "../components/FadeIn";
 import LottieView from "lottie-react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-const Profil = () => {
+const Profil = ({ navigation }) => {
   const [user, setUser] = React.useState(null);
-  const navigate = useNavigation();
 
   const fetchUserData = async (userId) => {
     try {
@@ -31,8 +30,15 @@ const Profil = () => {
         console.log("User ID not found or an error occurred.");
       }
     };
-    fetchUserIdFromStorage();
-  }, []);
+
+    const unsubscribe = navigation.addListener("focus", fetchUserIdFromStorage);
+
+    // Cleanup function
+    return () => {
+      unsubscribe();
+      // Additional cleanup if needed
+    };
+  }, [navigation]);
 
   // Function to get initials from the username
   const getInitials = (name) => {
@@ -48,7 +54,7 @@ const Profil = () => {
   };
 
   const handleEditUser = () => {
-    // Implement your edit user logic here
+    navigation.navigate("Editprofile", { userId: user.user_id });
   };
 
   return (
@@ -188,7 +194,7 @@ const Profil = () => {
                     alignSelf: "center",
                     marginLeft: 10,
                   }}>
-                  Security
+                  Edit profile
                 </Text>
               </TouchableOpacity>
 

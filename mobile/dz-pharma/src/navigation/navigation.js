@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Screen1 from "../screens/Screen1"; // Replace 'Screen1' with your actual screen components
 import SignUp from "../screens/SignUp";
 import SignIn from "../screens/SignIn";
-
+import Editprofile from "../screens/Editprofile";
 import BottomTab from "./Tabnav";
 const Stack = createStackNavigator();
 
@@ -29,6 +29,11 @@ const StackNavigator = () => {
       <Stack.Screen
         name="BottomTab"
         component={BottomTab}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Editprofile"
+        component={Editprofile}
         options={{ headerShown: false }}
       />
 
