@@ -85,7 +85,7 @@ userRouter.get("/user", async (req, res) => {
   }
 });
 
-userRouter.get("/users/list", async (req, res) => {
+userRouter.get("/userslist", async (req, res) => {
   try {
     // Fetch users from the database who are not archived
     const notArchivedUsers = await knex("users")

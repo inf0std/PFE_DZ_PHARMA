@@ -5,6 +5,7 @@ const bodyParser = require("body-parser"); // Move bodyParser require here
 
 const userRouter = require("./src/router/userRouter");
 const pharmaRouter = require("./src/router/pharmaRouter");
+const medRouter = require("./src/router/medRouter");
 const app = express();
 app.use(cors());
 // Place bodyParser before the router middleware
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use(userRouter);
 app.use(pharmaRouter);
+app.use(medRouter);
 
 //starting server
 app.listen(8080, () => {

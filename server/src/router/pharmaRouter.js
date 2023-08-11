@@ -81,7 +81,23 @@ pharmaRouter.put("/edit/:id", async (req, res) => {
 pharmaRouter.delete("/delete/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(id);
+    // Get the idpharmacie from the pharmacy being deleted
+    const deletedPharmacy = await knex("pharmacie")
+      .where("pharmacie_id", id)
+      .first();
+    const deletedPharmacyId = deletedPharmacy
+      ? deletedPharmacy.pharmacie_id
+      : null;
+
+    // Update the idpharmacie field in the users table
+    await knex("users")
+      .where("idpharmacie", deletedPharmacyId)
+      .update({ idpharmacie: null });
+
+    // Delete the pharmacy
     await knex("pharmacie").where("pharmacie_id", id).del();
+
     res.json({ message: "Pharmacy deleted successfully" });
   } catch (error) {
     console.error("Error deleting pharmacy:", error);
