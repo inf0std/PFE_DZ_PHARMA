@@ -8,7 +8,9 @@ import {
   Dimensions,
   TextInput,
   Button,
+  StyleSheet,
 } from "react-native";
+import { useForm, Controller } from "react-hook-form";
 import { Feather } from "@expo/vector-icons";
 import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 import LottieView from "lottie-react-native";
@@ -17,6 +19,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API_URL } from "../../config";
 const SignIn = ({ navigation }) => {
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isDirty },
+  } = useForm({ mode: "onBlur", reValidateMode: "onChange" });
   const { width, height } = Dimensions.get("window");
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -65,7 +73,8 @@ const SignIn = ({ navigation }) => {
               color: "#323646",
               alignSelf: "center",
               marginTop: 20,
-            }}>
+            }}
+          >
             Welcome to Pharma_DZ
           </Text>
           <Text
@@ -73,20 +82,23 @@ const SignIn = ({ navigation }) => {
               fontSize: 16,
               color: "#323646",
               alignSelf: "center",
-            }}>
+            }}
+          >
             Make your day great!
           </Text>
         </Animated.View>
 
         <Animated.View
           entering={FadeInDown.delay(600).duration(300)}
-          style={{ flex: 1 }}>
+          style={{ flex: 1 }}
+        >
           <Text
             style={{
               fontSize: 16,
               color: "#323646",
               marginTop: 20,
-            }}>
+            }}
+          >
             Email
           </Text>
           <View
@@ -95,15 +107,37 @@ const SignIn = ({ navigation }) => {
               height: 50,
               borderRadius: 10,
               paddingHorizontal: 10,
-            }}>
-            <TextInput
-              value={email}
-              onChangeText={setEmail}
-              style={{
-                color: "#323646",
-                padding: 10,
-              }}
+            }}
+          >
+            <Controller
+              control={control}
+              name="email"
+              rules={{ required: { value: true, message: "obligatoire*" } }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={{
+                    color: "#323646",
+                    padding: 10,
+                  }}
+                />
+              )}
             />
+
+            {errors?.email && (
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "red",
+                  padding: 10,
+                  textAlign: "center",
+                }}
+              >
+                {errors.email.message}
+              </Text>
+            )}
           </View>
 
           <Text
@@ -111,7 +145,8 @@ const SignIn = ({ navigation }) => {
               fontSize: 16,
               color: "#323646",
               marginTop: 20,
-            }}>
+            }}
+          >
             Password
           </Text>
           <View
@@ -123,17 +158,38 @@ const SignIn = ({ navigation }) => {
               alignItems: "center",
               justifyContent: "space-between",
               paddingHorizontal: 10,
-            }}>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={true}
-              style={{
-                color: "#323646",
-                padding: 10,
-                width: 300,
-              }}
+            }}
+          >
+            <Controller
+              control={control}
+              name="password"
+              rules={{ required: { value: true, message: "Obligatoire*" } }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  value={value}
+                  secureTextEntry={true}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={{
+                    color: "#323646",
+                    padding: 10,
+                  }}
+                />
+              )}
             />
+
+            {errors?.password && (
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "red",
+                  padding: 10,
+                  textAlign: "center",
+                }}
+              >
+                {errors.email.message}
+              </Text>
+            )}
             <Feather name="eye" size={24} color="#323646" />
           </View>
           <TouchableOpacity
@@ -145,12 +201,14 @@ const SignIn = ({ navigation }) => {
               height: 50,
               marginTop: 20,
             }}
-            onPress={handleSignIn}>
+            onPress={handleSubmit(handleSignIn)}
+          >
             <Text
               style={{
                 fontSize: 16,
                 color: "#FFF",
-              }}>
+              }}
+            >
               Login
             </Text>
           </TouchableOpacity>
@@ -161,7 +219,8 @@ const SignIn = ({ navigation }) => {
                 color: "red",
                 padding: 10,
                 textAlign: "center",
-              }}>
+              }}
+            >
               {error}
             </Text>
           )}
@@ -171,7 +230,8 @@ const SignIn = ({ navigation }) => {
               color: "#50e3c2",
               padding: 10,
               textAlign: "center",
-            }}>
+            }}
+          >
             Forgot password?
           </Text>
 
@@ -182,19 +242,22 @@ const SignIn = ({ navigation }) => {
               alignSelf: "center",
               alignItems: "flex-end",
             }}
-            onPress={() => navigation.navigate("SignUp")}>
+            onPress={() => navigation.navigate("SignUp")}
+          >
             <Text
               style={{
                 fontSize: 14,
                 color: "#323646",
-              }}>
+              }}
+            >
               Don't have an account?{" "}
             </Text>
             <Text
               style={{
                 fontSize: 14,
                 color: "#50e3c2",
-              }}>
+              }}
+            >
               Register!
             </Text>
           </TouchableOpacity>
@@ -204,4 +267,18 @@ const SignIn = ({ navigation }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "lightblue",
+    padding: 20,
+  },
+  text: {
+    fontSize: 18,
+    color: "darkblue",
+  },
+  error: {
+    fontSize: 18,
+    color: "red",
+  },
+});
 export default SignIn;

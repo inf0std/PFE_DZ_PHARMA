@@ -19,7 +19,29 @@ const SearchScreen = () => {
   const { width, height } = Dimensions.get("window");
 
   const [pharmacies, setPharmacies] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [prescreption, setPrescreption] = useState([]);
+  const addToPrescreption = (med) => () => {
+    setPrescreption([...prescreption, med]);
+  };
 
+  const resetPrescreption = () => {
+    setPrescreption([]);
+  };
+  const [searchResults, setSearchResults] = useState([
+    {
+      denomination_commune_internationale: "12/12/12",
+      code: "paracetamole",
+      id: 1,
+    },
+    {
+      denomination_commune_internationale: "12/12/12",
+      code: "paracetamole",
+      id: 2,
+    },
+  ]);
+
+  /* 
   useEffect(() => {
     // Fetch the list of pharmacies using Axios
     axios
@@ -32,8 +54,6 @@ const SearchScreen = () => {
         console.error("Error fetching pharmacies:", error);
       });
   }, []);
-  const [searchText, setSearchText] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     const search = async () => {
@@ -60,7 +80,7 @@ const SearchScreen = () => {
 
     return () => clearTimeout(delay);
   }, [searchText]);
-
+ */
   return (
     <View style={styles.container}>
       <View
@@ -74,10 +94,11 @@ const SearchScreen = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-        }}>
+        }}
+      >
         <TextInput
           value={searchText}
-          onChangeText={setSearchText}
+          //onChangeText={setSearchText}
           style={{ flex: 1, color: "#3d4fb8" }}
         />
         <FontAwesome5 name="times" size={24} color="#3d4fb8" />
@@ -86,15 +107,37 @@ const SearchScreen = () => {
 
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         <FlatList
+          style={{ width: "95%" }}
           data={searchResults}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View>
-              <Text>{item.denomination_commune_internationale}</Text>
-              <Text>{item.code}</Text>
+            <View
+              style={{
+                backgroundColor: "white",
+                borderWidth: 1,
+                borderColor: "#AAAAAA",
+                width: "98%",
+                margin: 2,
+                padding: 10,
+              }}
+            >
+              <TouchableOpacity onPress={addToPrescreption(item)}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: 18,
+                    alignSelf: "center",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  {item.code}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         />
+        <Text>{prescreption.length}</Text>
         {pharmacies?.map((pharmacy) => (
           <PharmacyCard key={pharmacy.pharmacie_id} pharmacy={pharmacy} />
         ))}
