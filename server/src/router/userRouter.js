@@ -7,10 +7,83 @@ const knex = require("knex")({
     user: "root",
     password: "",
     database: "Pharma_dz",
+    port: 3307,
   },
 });
 
 const userRouter = express.Router();
+const staticMedicaments = [
+  {
+    num_enregistrement: "12345",
+    code: "ABC123",
+    denomination_commune_internationale: "Paracetamol",
+    nom_de_marque: "Panadol",
+    forme: "Tablet",
+    dosage: "500mg",
+    cond: "Fever",
+    liste: "List A",
+    p1: "P1 value",
+    p2: "P2 value",
+    obs: "Observations",
+    laboratoires_detenteur_de_la_decision_d_enregistrement: "Lab A",
+    pays_du_laboratoire_detenteur_de_la_decision_d_enregistrement: "Country A",
+    date_d_enregistrement_initial: "2023-08-15",
+    date_d_enregistrement_final: "2023-08-31",
+    type: "Type A",
+    statut: "Status A",
+    duree_de_stabilite: "Stability duration",
+    prix_porte_sur_la_decision_d_enregistrement: "Price info",
+    remboursement: "Yes",
+    reserve: "Reserved",
+  },
+  // Add more real-like data...
+  {
+    num_enregistrement: "67890",
+    code: "XYZ789",
+    denomination_commune_internationale: "Ibuprofen",
+    nom_de_marque: "Advil",
+    forme: "Tablet",
+    dosage: "200mg",
+    cond: "Pain relief",
+    liste: "List B",
+    p1: "P1 value",
+    p2: "P2 value",
+    obs: "Observations",
+    laboratoires_detenteur_de_la_decision_d_enregistrement: "Lab B",
+    pays_du_laboratoire_detenteur_de_la_decision_d_enregistrement: "Country B",
+    date_d_enregistrement_initial: "2023-09-01",
+    date_d_enregistrement_final: "2023-09-15",
+    type: "Type B",
+    statut: "Status B",
+    duree_de_stabilite: "Stability duration",
+    prix_porte_sur_la_decision_d_enregistrement: "Price info",
+    remboursement: "No",
+    reserve: "Not reserved",
+  },
+  // Add more real-like data...
+];
+async function insertStaticMedicaments() {
+  try {
+    for (const medicament of staticMedicaments) {
+      // Insert the medicament into the database
+      await knex("medicament").insert({
+        num_enregistrement: medicament.num_enregistrement,
+        code: medicament.code,
+        denomination_commune_internationale: medicament.denomination_commune_internationale,
+        nom_de_marque: medicament.nom_de_marque,
+        forme: medicament.forme,
+        dosage: medicament.dosage,
+        // ... other fields
+      });
+    }
+    console.log("Static medicaments inserted successfully.");
+  } catch (error) {
+    console.error("Error inserting static medicaments:", error);
+  }
+}
+
+
+
 
 userRouter.post("/SignUp", async (req, res) => {
   const { username, email, password } = req.body;

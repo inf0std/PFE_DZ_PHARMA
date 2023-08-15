@@ -19,6 +19,6 @@ app.use(pharmaRouter);
 app.use(medRouter);
 
 //starting server
-app.listen(8080, () => {
+app.listen(4000, () => {
   console.log("listening on port 8080");
 });
