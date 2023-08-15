@@ -7,6 +7,7 @@ const knex = require("knex")({
     user: "root",
     password: "",
     database: "Pharma_dz",
+    port: 3307,
   },
 });
 
@@ -79,5 +80,39 @@ medRouter.get("/searchMed", async (req, res) => {
     res.status(500).json({ error: "An error occurred while searching." });
   }
 });
+
+
+async function getMatchingMedicationsByDCI(ordonnance) {
+  try {
+    const uniqueDCIs = [...new Set(ordonnance.map(item => item.denomination_commune_internationale))];
+
+    const matchingMedications = await knex("medicament")
+      .select("*")
+      .whereIn("denomination_commune_internationale", uniqueDCIs);
+
+    return matchingMedications;
+  } catch (error) {
+    console.error("Error retrieving medications:", error);
+    throw new Error("An error occurred while retrieving medications.");
+  }
+}
+
+async function testFunction() {
+  try {
+    const ordonnance = [
+      { id: 1, denomination_commune_internationale: "Common Name " },
+      { id: 2, denomination_commune_internationale: "Paracetamol" },
+      // ... add more medications
+    ];
+
+    const matchingMedications = await getMatchingMedicationsByDCI(ordonnance);
+
+    console.log("Matching Medications:", matchingMedications);
+  } catch (error) {
+    console.error("Error:", error.message);
+  }
+}
+
+testFunction();
 
 module.exports = medRouter;
