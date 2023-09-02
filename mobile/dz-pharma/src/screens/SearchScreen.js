@@ -9,37 +9,80 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Button,
 } from "react-native";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
-import PharmacyCard from "../components/PharmacyCard";
-import axios from "axios";
-import { API_URL } from "../../config";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { medList } from "../redux/slices/meds/medsSlice";
 
 const SearchScreen = () => {
   const { width, height } = Dimensions.get("window");
-
-  const [pharmacies, setPharmacies] = useState([]);
+  const { meds } = useSelector((state) => state.meds);
   const [searchText, setSearchText] = useState("");
   const [prescreption, setPrescreption] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+
+  //console.log(meds);
+  //console.log(meds.list, "medlist");
+  const dispatch = useDispatch();
+  meds?.list?.length == 0 && dispatch(medList());
+  //console.log("type medlist", typeof meds?.list);
+
   const addToPrescreption = (med) => () => {
     setPrescreption([...prescreption, med]);
+    setSearchResults((searchResults) =>
+      searchResults.filter((_med) => _med.ID !== med.ID)
+    );
   };
+
+  /* useEffect(() => {
+    //fetch("h")
+
+    console.log("listing meds useEffect");
+
+    return () => {
+      meds.list.length == 0 && dispatch(medList());
+    };
+  }, []); */
 
   const resetPrescreption = () => {
     setPrescreption([]);
   };
-  const [searchResults, setSearchResults] = useState([
-    {
-      denomination_commune_internationale: "12/12/12",
-      code: "paracetamole",
-      id: 1,
-    },
-    {
-      denomination_commune_internationale: "12/12/12",
-      code: "paracetamole",
-      id: 2,
-    },
-  ]);
+
+  const filterMedsPrescription = (_meds) => {
+    return _meds.filter(
+      (med) => !prescreption.find((p_med) => p_med.ID == med.ID)
+    );
+  };
+
+  const filterMeds = (search) => {
+    let exp = new RegExp(search);
+
+    if (search !== "") {
+      if (search.length > searchText.length && searchText != "") {
+        setSearchText(() => search);
+
+        setSearchResults((searchResults) =>
+          filterMedsPrescription(searchResults).filter((med) =>
+            exp.test(med.MARQUE)
+          )
+        );
+      } else {
+        setSearchText(() => search);
+        setSearchResults(() =>
+          filterMedsPrescription(meds.list).filter((med) =>
+            exp.test(med.MARQUE)
+          )
+        );
+      }
+    } else {
+      console.log("empty search string");
+      setSearchText("");
+      setSearchResults([]);
+    }
+    console.log("search", search);
+  };
 
   /* 
   useEffect(() => {
@@ -98,18 +141,21 @@ const SearchScreen = () => {
       >
         <TextInput
           value={searchText}
-          //onChangeText={setSearchText}
+          onChangeText={(e) => {
+            filterMeds(e);
+          }}
           style={{ flex: 1, color: "#3d4fb8" }}
         />
+        <Button onPress={() => filterMeds("")} title="X" />
         <FontAwesome5 name="times" size={24} color="#3d4fb8" />
       </View>
       {/* Your search implementation goes here */}
 
-      <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
+      <View>
         <FlatList
           style={{ width: "95%" }}
           data={searchResults}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.ID.toString()}
           renderItem={({ item }) => (
             <View
               style={{
@@ -131,17 +177,17 @@ const SearchScreen = () => {
                     alignItems: "center",
                   }}
                 >
-                  {item.code}
+                  {`${item.MARQUE}\n${item.FORME}:${item.DOSAGE}`}
                 </Text>
               </TouchableOpacity>
             </View>
           )}
         />
         <Text>{prescreption.length}</Text>
-        {pharmacies?.map((pharmacy) => (
+        {/* {pharmacies?.map((pharmacy) => (
           <PharmacyCard key={pharmacy.pharmacie_id} pharmacy={pharmacy} />
-        ))}
-      </ScrollView>
+        ))} */}
+      </View>
     </View>
   );
 };

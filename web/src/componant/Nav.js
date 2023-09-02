@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Dropdown, Navbar, Nav, Button } from "react-bootstrap";
-import "../bootstrap/css/bootstrap.min.css";
+//import "../bootstrap/css/bootstrap.min.css";
 
 const MyNav = () => {
   const [userData, setUserData] = useState(null);
@@ -55,17 +55,20 @@ const MyNav = () => {
               justifyContent: "center",
               alignItems: "center",
               marginBottom: "15px",
-            }}>
+            }}
+          >
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 marginRight: "200px",
-              }}>
+              }}
+            >
               <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle
                   as={Nav.Link}
-                  id="dropdown-basic"></Dropdown.Toggle>
+                  id="dropdown-basic"
+                ></Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={disconnectUser}>
                     Se deconnecter
@@ -84,7 +87,8 @@ const MyNav = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   marginRight: "-10px",
-                }}>
+                }}
+              >
                 {userData.username.slice(0, 2)}
               </div>
               {userData.idpharmacie ? (

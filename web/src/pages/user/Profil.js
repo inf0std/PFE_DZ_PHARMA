@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tab, Tabs, Badge, Modal, Button } from "react-bootstrap"; // Import Tab and Tabs components
-import "../../bootstrap/css/bootstrap.min.css"; // Import Bootstrap CSS
+//import "../../bootstrap/css/bootstrap.min.css"; // Import Bootstrap CSS
 import Pharma from "../pharmacies/Pharmacie";
 import AddStock from "./AddStock";
 import MyNav from "../../componant/Nav";
@@ -23,7 +23,7 @@ const Profil = () => {
   };
 
   const fetchUserInformation = (userId) => {
-    fetch(`http://localhost:8080/user?userId=${userId}`)
+    fetch(`http://localhost:8000/user?userId=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         setUserData(data);
@@ -54,13 +54,15 @@ const Profil = () => {
           display: "flex",
 
           backgroundColor: "#f5f5f5",
-        }}>
+        }}
+      >
         <div
           style={{
             display: "flex",
 
             backgroundColor: "#f5f5f5",
-          }}>
+          }}
+        >
           {userData ? (
             <div
               style={{
@@ -69,14 +71,16 @@ const Profil = () => {
                 boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                 padding: "20px",
                 minWidth: "300px", // Adjust the minimum width as needed
-              }}>
+              }}
+            >
               <div
                 style={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   marginBottom: "15px",
-                }}>
+                }}
+              >
                 <div
                   style={{
                     backgroundColor: "#007bff",
@@ -88,7 +92,8 @@ const Profil = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   {userData.username.slice(0, 2)}
                 </div>
               </div>
@@ -109,7 +114,8 @@ const Profil = () => {
                   <button
                     className="btn btn-primary"
                     onClick={handleDevenirPharmacien}
-                    style={{ marginTop: "10px" }}>
+                    style={{ marginTop: "10px" }}
+                  >
                     Ajouter une Pharmacie
                   </button>
                 )
@@ -128,7 +134,8 @@ const Profil = () => {
             <Tabs
               defaultActiveKey="profile"
               id="uncontrolled-tab-example"
-              className="mb-3">
+              className="mb-3"
+            >
               {userData.is_admin ? (
                 <Tab eventKey="MedicamentList" title="MedicamentList">
                   <MedicamentList />
@@ -156,7 +163,8 @@ const Profil = () => {
                 ) : (
                   <Tab
                     eventKey="ajouter une pharmacie"
-                    title="ajouter une pharmacie">
+                    title="ajouter une pharmacie"
+                  >
                     <Pharma />
                   </Tab>
                 )

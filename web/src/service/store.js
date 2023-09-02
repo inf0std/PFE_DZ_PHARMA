@@ -5,27 +5,32 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
 import authReducer from "./auth";
-import paginationReducer from "./slices/pagination";
-
+import pharmacieReducer from "./slices/pharmacies";
+import medicamentReducer from "./slices/medicaments";
+import usersReducer from "./slices/users";
+import { pharmacyApi } from "./api/pharmacyApi";
 const persistConfig = {
   key: "root",
   storage,
-  whiteList: ["auth", "pagination"],
+  whiteList: ["auth", "parmacie", "medicament", "users"],
   blackList: [],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  pagination: paginationReducer,
+  pharmacie: pharmacieReducer,
+  medicament: medicamentReducer,
+  users: usersReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: {
     persistedReducer,
+    [pharmacyApi.reducerPath]: pharmacyApi.reducer,
     //[userApi.reducerPath]: userApi.reducer,
   },
-  middleware: [thunk],
+  middleware: [thunk, pharmacyApi.middleware],
 });
 
 setupListeners(store.dispatch);

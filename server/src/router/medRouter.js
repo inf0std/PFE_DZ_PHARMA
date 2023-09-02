@@ -7,16 +7,46 @@ const knex = require("knex")({
     user: "root",
     password: "",
     database: "Pharma_dz",
-    port: 3307,
+    // port: 3307,
   },
 });
 
 const medRouter = express.Router();
 
-medRouter.get("/lists/medicaments", async (req, res) => {
+medRouter.get("/", async (req, res) => {
   try {
-    const medicaments = await knex("medicament").select("*");
-    res.json(medicaments);
+    const medicaments = await knex("medicament").select("*").whereNotNull("P2");
+    res.json(
+      medicaments.map((med) => {
+        const {
+          ID,
+          NUM_ENREGISTREMENT: NUM_ENR,
+          CODE,
+          DENOMINATION_COMMUNE_INTERNATIONALE: DCI,
+          NOM_DE_MARQUE: MARQUE,
+          FORME,
+          DOSAGE,
+          COND,
+          REMBOURSEMENT,
+          PRIX_PORTE_SUR_LA_DECISION_DENREGISTREMENT: PRIX,
+          //P2,
+        } = med;
+
+        return {
+          ID,
+          CODE,
+          MARQUE,
+          DCI,
+          NUM_ENR,
+          FORME,
+          DOSAGE,
+          COND,
+          REMBOURSEMENT,
+          PRIX,
+          // P2,
+        };
+      })
+    );
   } catch (error) {
     console.error("Error fetching medicaments:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -81,10 +111,13 @@ medRouter.get("/searchMed", async (req, res) => {
   }
 });
 
-
 async function getMatchingMedicationsByDCI(ordonnance) {
   try {
-    const uniqueDCIs = [...new Set(ordonnance.map(item => item.denomination_commune_internationale))];
+    const uniqueDCIs = [
+      ...new Set(
+        ordonnance.map((item) => item.denomination_commune_internationale)
+      ),
+    ];
 
     const matchingMedications = await knex("medicament")
       .select("*")

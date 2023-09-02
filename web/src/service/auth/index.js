@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_AUTH_URL } from "../../assets/constants";
+import { API_AUTH_URL } from "../../constants";
 import axios from "axios"; // Import axios
 
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }, thunkAPI) => {
-    console.log("444444444444", email, password);
     try {
       console.log(thunkAPI);
       // Use axios instead of fetch
@@ -20,8 +19,7 @@ export const login = createAsyncThunk(
 
       return response.status === 200 ? data : thunkAPI.rejectWithValue(data);
     } catch (e) {
-      return console.log(e);
-      // thunkAPI.rejectWithValue(e);
+      return thunkAPI.rejectWithValue(e);
     }
   }
 );

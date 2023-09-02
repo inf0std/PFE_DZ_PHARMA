@@ -7,17 +7,17 @@ const knex = require("knex")({
     user: "root",
     password: "",
     database: "Pharma_dz",
-    port: 3307,
+    //port: 3307,
   },
 });
 
 const pharmaRouter = express.Router();
 
 // Route: Create a new pharmacy
-pharmaRouter.post("/create/:userId", async (req, res) => {
+pharmaRouter.post("/", async (req, res) => {
   try {
-    const id_owner = req.params.userId;
-    const { name, latitude, longitude, phone } = req.body;
+    // const id_owner = req.params.userId;
+    const { name, latitude, longitude, phone, userId: id_owner } = req.body;
     const newPharmacy = { id_owner, name, latitude, longitude, phone };
 
     // Insert the new pharmacy record and get its ID
@@ -36,7 +36,7 @@ pharmaRouter.post("/create/:userId", async (req, res) => {
 });
 
 // Route: List all pharmacies
-pharmaRouter.get("/list", async (req, res) => {
+pharmaRouter.get("/", async (req, res) => {
   try {
     const pharmacies = await knex("pharmacie").select("*");
     res.json(pharmacies);
@@ -47,7 +47,7 @@ pharmaRouter.get("/list", async (req, res) => {
 });
 
 // Route: Get a specific pharmacy by ID
-pharmaRouter.get("/list/:id", async (req, res) => {
+pharmaRouter.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const pharmacy = await knex("pharmacie").where("pharmacie_id", id).first();
@@ -64,7 +64,7 @@ pharmaRouter.get("/list/:id", async (req, res) => {
 });
 
 // Route: Edit a pharmacy
-pharmaRouter.put("/edit/:id", async (req, res) => {
+pharmaRouter.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { id_owner, name, latitude, longitude, phone } = req.body;
@@ -79,7 +79,7 @@ pharmaRouter.put("/edit/:id", async (req, res) => {
 });
 
 // Route: Delete a pharmacy
-pharmaRouter.delete("/delete/:id", async (req, res) => {
+pharmaRouter.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     console.log(id);
