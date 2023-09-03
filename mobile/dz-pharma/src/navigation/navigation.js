@@ -1,11 +1,12 @@
 // StackNavigator.js
 
 import { createStackNavigator } from "@react-navigation/stack";
-import Screen1 from "../screens/Screen1"; // Replace 'Screen1' with your actual screen components
+import CartScreen from "../screens/CartScreen"; // Replace 'CartScreen' with your actual screen components
 import SignUp from "../screens/SignUp";
 import SignIn from "../screens/SignIn";
 import Editprofile from "../screens/Editprofile";
 import BottomTab from "./Tabnav";
+import PhamaList from "../screens/PharmaList";
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -17,6 +18,18 @@ const StackNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="PhamaList"
+        component={PhamaList}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="CartScreen"
+        component={CartScreen}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
         name="SignIn"
         component={SignIn}
         options={{ headerShown: false }}
@@ -24,11 +37,6 @@ const StackNavigator = () => {
       <Stack.Screen
         name="SignUp"
         component={SignUp}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Screen1"
-        component={Screen1}
         options={{ headerShown: false }}
       />
 

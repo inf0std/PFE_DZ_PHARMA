@@ -15,8 +15,9 @@ import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { medList } from "../redux/slices/meds/medsSlice";
-
-const SearchScreen = () => {
+import { MaterialIcons } from "@expo/vector-icons";
+import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
+const SearchScreen = ({ navigation }) => {
   const { width, height } = Dimensions.get("window");
   const { meds } = useSelector((state) => state.meds);
   const [searchText, setSearchText] = useState("");
@@ -137,21 +138,60 @@ const SearchScreen = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-        }}
-      >
+        }}>
         <TextInput
           value={searchText}
           onChangeText={(e) => {
             filterMeds(e);
           }}
-          style={{ flex: 1, color: "#3d4fb8" }}
+          style={{ flex: 1, color: "#4fb69a" }}
         />
         <Button onPress={() => filterMeds("")} title="X" />
-        <FontAwesome5 name="times" size={24} color="#3d4fb8" />
+        <FontAwesome5 name="times" size={24} color="#4fb69a" />
       </View>
       {/* Your search implementation goes here */}
 
       <View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: 20,
+          }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              style={{
+                fontSize: 18,
+                marginLeft: 10,
+                color: "#151516",
+                marginBottom: -3,
+              }}></Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              right: 3,
+              top: 12,
+              width: 22,
+              height: 22,
+              borderRadius: 11,
+              backgroundColor: "#4fb69a",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                color: "#FFF",
+              }}>
+              {prescreption.length}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("CartScreen")}>
+            <MaterialIcons name="shopping-cart" size={24} color="#313132" />
+          </TouchableOpacity>
+        </View>
         <FlatList
           style={{ width: "95%" }}
           data={searchResults}
@@ -165,8 +205,7 @@ const SearchScreen = () => {
                 width: "98%",
                 margin: 2,
                 padding: 10,
-              }}
-            >
+              }}>
               <TouchableOpacity onPress={addToPrescreption(item)}>
                 <Text
                   style={{
@@ -175,8 +214,7 @@ const SearchScreen = () => {
                     alignSelf: "center",
                     flexDirection: "row",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   {`${item.MARQUE}\n${item.FORME}:${item.DOSAGE}`}
                 </Text>
               </TouchableOpacity>
