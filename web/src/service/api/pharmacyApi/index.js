@@ -5,12 +5,13 @@ export const pharmacyApi = createApi({
   reducerPath: "UsersApi",
 
   baseQuery: axiosBaseQuery,
+  entityTypes: ["Agencies"],
   endpoints: (builder) => ({
     fetchPharmacies: builder.query({
       query: () => ({
         url: "pharmacy/list",
         method: "GET",
-        //params: { page, per_page },
+        params: {},
       }),
     }),
     fetchPharmacy: builder.query({
@@ -25,7 +26,6 @@ export const pharmacyApi = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
-      //invalidatesTags: ["Post"],
     }),
     addStockMutation: builder.mutation({
       query: (body) => ({
