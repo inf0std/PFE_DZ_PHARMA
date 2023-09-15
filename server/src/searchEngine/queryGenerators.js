@@ -23,6 +23,7 @@ const medsPharmaQuantityQuery = (med_ids, pharmacies) => {
   } DAY) AND pharmacie_id in (${pharmacies
     .map((_) => _.pharmacie_id)
     .join(",")})  GROUP BY pharmacie_id ORDER BY pharmacie_id`;
+  console.log("quantity", sql, "\n\n\n");
   return sql;
 };
 

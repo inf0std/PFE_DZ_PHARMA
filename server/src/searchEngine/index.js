@@ -10,6 +10,8 @@ const {
   constructMaxQuantityGlobal,
   constructMinExpirationGlobal,
   constructPharmciesChains,
+  finalScore,
+  setCover,
 } = require("../searchEngine/scoreFn");
 const test_data = {
   pharmacies: [
@@ -134,7 +136,14 @@ const makeSearch = async (req, res) => {
     quant: quantityIndex(quantity),
     expiration: expirationIndex(quantity),
     mat,
-    maxQ: constructMaxQuantityGlobal([
+    scoreg: finalScore(
+      setCover(quantityIndex(quantity)),
+      expirationIndex(quantity),
+      [],
+      quantityIndex(quantity),
+      pharmacies
+    ),
+    /*   maxQ: constructMaxQuantityGlobal([
       [12, 0, 0, 0, 0, 0, 30],
       [11, 11, 0, 0, 0, 0, 10],
       [11, 11, 0, 10, 110, 0, 0],
@@ -154,7 +163,7 @@ const makeSearch = async (req, res) => {
       [100, 890, null, 34, 75, null, 98, 111],
       [101, 800, 49, 24, 65, null, 98, 111],
       [120, 820, 450, null, 76, null, 98, 111],
-    ]),
+    ]), */
   });
 };
 

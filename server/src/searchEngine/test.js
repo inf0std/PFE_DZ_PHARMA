@@ -20,25 +20,122 @@ const covered = (cumul) => {
   return cumul.filter((e) => e != 0).length == cumul.length;
 };
 
-const setCover = (matrix) => {
-  let i = 0,
-    j = 0;
-  const nbRows = matrix.length ? matrix.length : 0;
-  const nbCols = matrix.length > 0 ? matrix[0].length : 0;
-  const chains = matrix.map((_, index) => [index]);
+function arraysAreEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+function sortAndRemoveDuplicates(arrOfArrays) {
+  // Sort each sub-array
+  const sortedArrays = arrOfArrays.map((arr) => [...arr].sort());
 
-  const initialCumuls = chains.map((c) => countCumul(c, matrix));
-  const bestCumuls = initialCumuls
-    .map((cumul) => cumul.filter((e) => e > 0).length)
-    .sort((a, b) => b - a)
+  // Use the filter method to remove duplicates
+  const uniqueArrayOfArrays = sortedArrays.filter((arr, index, self) => {
+    // Find the first occurrence of the current array in the original array
+    const firstIndex = self.findIndex((otherArr) =>
+      arraysAreEqual(arr, otherArr)
+    );
+
+    // Return true only if the current index is the same as the first occurrence
+    return index === firstIndex;
+  });
+
+  return uniqueArrayOfArrays;
+}
+
+const setCover = (matrix) => {
+  const maxCumul = matrix.length > 0 ? matrix[0].length : 0;
+  let chains = matrix.map((_, index) => [index]);
+
+  const initialCumuls = chains.map((c, index) => ({
+    chain: c,
+    value: countCumul(c, matrix),
+  }));
+
+  let bestCumuls = initialCumuls
+    .map((cumul) => ({
+      ...cumul,
+      value: cumul.value.filter((e) => e > 0).length,
+    }))
+    .sort((a, b) => b.value - a.value)
     .slice(0, params.getParams().nb_result);
 
+  chains = bestCumuls.map((best) => best.chain);
+  console.log("best", bestCumuls);
   const indexes = matrix.map((_, i) => i);
+
   for (let _ = 0; _ < params.getParams().nb_pharma_result_max; _++) {
-    chains.forEach((chain) => {
-      console.log(indexes.filter((e) => !chain.some((c) => c == e)));
+    let addedChains = [];
+    console.log("________________________________");
+    console.log("iteration ", _);
+
+    console.log("________________________________");
+    chains.forEach((chain, i_ch) => {
+      console.log("chain", chain, "index", i_ch);
+      console.log("________________________________");
+      let testCumul = [];
+
+      indexes
+        .filter((e) => !chain.some((c) => c == e))
+        .forEach((e) =>
+          testCumul.push({
+            ext: e,
+            value: countCumul([...chain, [e]], matrix).filter(
+              (elem) => elem != 0
+            ).length,
+          })
+        );
+
+      //console.log(testCumul);
+      console.log("________________________________");
+      let max = testCumul.reduce(
+        (max, e, index) =>
+          testCumul[max].value > testCumul[index].value ? max : index,
+        0
+      );
+      console.log(
+        "added",
+        testCumul.filter((test) => test.value == testCumul[max].value)
+      );
+      console.log("testcumul", testCumul[max], "\nbest", bestCumuls[i_ch]);
+      addedChains.push([
+        i_ch,
+        testCumul[max].value > bestCumuls[i_ch].value
+          ? testCumul.filter((test) => test.value == testCumul[max].value)
+          : [],
+      ]);
     });
+    console.log("addedchains", addedChains[0][1].length);
+
+    chains = addedChains.reduce((acc, elem) => {
+      console.log(elem);
+      if (elem[1].length == 0) {
+        return [...acc, chains[elem[0]]];
+      } else {
+        return [...acc, ...elem[1].map((ch) => [...chains[elem[0]], ch.ext])];
+      }
+    }, []);
+    chains = sortAndRemoveDuplicates(chains);
+    bestCumuls = chains
+      .map((c, index) => ({
+        chain: c,
+        value: countCumul(c, matrix),
+      }))
+      .map((cumul) => ({
+        ...cumul,
+        value: cumul.value.filter((e) => e > 0).length,
+      }));
+
+    console.log("chains", chains, "\nbest", bestCumuls);
+    //let newChains =
   }
+  return chains;
 };
 /* function couvertureParEnsemble(matriceIncidence) {
   const resultat = new Set(); // Use a Set to store unique sets
@@ -84,8 +181,8 @@ const solutions = couvertureParEnsemble(matriceIncidence);
 console.log("Différentes combinaisons de solutions :", solutions); */
 
 setCover([
-  [1, 0, 1, 0],
-  [0, 1, 1, 0],
-  [1, 0, 0, 1],
-  [0, 1, 1, 1],
+  [1, 0, 1, 0, 1, 1],
+  [0, 1, 1, 0, 0, 0],
+  [1, 0, 0, 1, 0, 1],
+  [0, 1, 1, 1, 1, 0],
 ]);
