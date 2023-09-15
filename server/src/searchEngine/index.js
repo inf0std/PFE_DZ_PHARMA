@@ -122,21 +122,18 @@ const medIdsFromQuantity = (quantities) => {
     Number.parseInt(key.slice(2))
   );
 };
+
 const makeSearch = async (req, res) => {
   let pharmacies = await createPharmaDistenceIndex(req.body.position);
   let quantity = await createIndexFromIDs(req.body.ids, pharmacies);
   pharmacies = pharmacies.filter((pharma) =>
     quantity.some((_) => _.pharmacie_id == pharma.pharmacie_id)
   );
-  let mat = await createPharmaDistenceMatrix(pharmacies);
+  //let mat = await createPharmaDistenceMatrix(pharmacies);
 
   //console.log(medIdsFromQuantity(quantity));
   res.json({
-    pharmacies,
-    quant: quantityIndex(quantity),
-    expiration: expirationIndex(quantity),
-    mat,
-    scoreg: finalScore(
+    ...finalScore(
       setCover(quantityIndex(quantity)),
       expirationIndex(quantity),
       [],

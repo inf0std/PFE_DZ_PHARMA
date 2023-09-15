@@ -23,8 +23,16 @@ const medsPharmaQuantityQuery = (med_ids, pharmacies) => {
   } DAY) AND pharmacie_id in (${pharmacies
     .map((_) => _.pharmacie_id)
     .join(",")})  GROUP BY pharmacie_id ORDER BY pharmacie_id`;
-  console.log("quantity", sql, "\n\n\n");
+  //console.log("quantity", sql, "\n\n\n");
   return sql;
+};
+
+const quantityIndex = (quantities) => {
+  return quantities.map((quantity) =>
+    filterKeysByPrefix("Q_", Object.keys(quantity)).map((key) =>
+      Number.parseInt(quantity[key])
+    )
+  );
 };
 
 const createIndexFromIDs = async (ids, pharmacies) => {
@@ -32,7 +40,7 @@ const createIndexFromIDs = async (ids, pharmacies) => {
   let IDs = await createIndexFromDCIList(list_DCI);
 
   let sql = medsPharmaQuantityQuery(IDs, pharmacies);
-  console.log(sql);
+  //console.log(sql);
   return knex
     .raw(sql)
     .then((res) => res)
@@ -66,7 +74,7 @@ const createPharmaDistenceIndex = (position) => {
                     sin(radians(${position.latitude})) *
                     sin(radians(latitude))
                 )
-            ) AS distance, latitude, longitude
+            ) AS distance, latitude, longitude, name as nom
         FROM
             pharmacie
         HAVING distance < ${params.getParams().scope} `
