@@ -12,19 +12,23 @@ const findPrescription = createAsyncThunk(
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
       });
+      //console.log("search response", response);
       const data = await response.json();
+      //console.log("search result", data);
       if (!response.ok) {
+        //console.log("error searching", response);
         return thunkAPI.rejectWithValue({
-          error: "echeck de connection",
+          error: "echec de connection",
           data,
         });
       }
       return data;
     } catch (e) {
+      //console.log("error searcing ________________________", e);
       return thunkAPI.rejectWithValue({
-        error: "echeck de connection",
+        error: "echec de connection",
         data,
       });
     }
@@ -33,6 +37,21 @@ const findPrescription = createAsyncThunk(
 
 const initialState = {
   meds: [],
+  results: [
+    {
+      score: 10,
+      distence: 1.5,
+      remboursement: 3000,
+      pharmacies: [
+        {
+          nom: "chirifi",
+          longitude: 2.99353495582114,
+          latitude: 36.712691747354654,
+        },
+      ],
+    },
+  ],
+  displayedResult: null,
 };
 
 const cartSlice = createSlice({
@@ -40,27 +59,40 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addMed: (state, { payload }) => {
-      if (state.meds.some((med) => med.ID == payload.ID)) {
-        state.meds = [
-          ...state.meds.map((med) =>
-            med.id != payload.id ? med : { ID: med.ID, num: num + payload.num }
-          ),
-        ];
-      }
-      state.meds = [...state.meds, payload];
+      state.meds = [...state.meds, { med: payload, count: 1 }];
     },
     removeMed: (state, { payload }) => {
-      state.meds = [...state.meds.filter((med) => med.ID != payload.ID)];
+      state.meds = state.meds.filter((_, index) => index != payload);
+    },
+    incMedCount: (state, { payload }) => {
+      state.meds[payload].count++;
+    },
+    decMedCount: (state, { payload }) => {
+      state.meds[payload].count--;
+    },
+    setDisplayedResult: (state, { payload }) => {
+      state.displayedResult = payload;
     },
   },
   extraReducers: (builder) => {
-    /*  builder.addCase(signin.pending, (state) => {
-      state.singingIn = true;
-    }); */
+    builder
+      .addCase(findPrescription.pending, (state) => {})
+      .addCase(findPrescription.fulfilled, (state, { payload }) => {
+        console.log("search success");
+        console.log("payload", payload);
+        state.results = JSON.parse(payload);
+      })
+      .addCase(findPrescription.rejected, (state, { payload }) => {});
   },
 });
 // Export the action creators
-export const { addMed, removeMed } = cartSlice.actions;
+export const {
+  addMed,
+  removeMed,
+  incMedCount,
+  decMedCount,
+  setDisplayedResult,
+} = cartSlice.actions;
 
 // Export the async thunks
 export { findPrescription };

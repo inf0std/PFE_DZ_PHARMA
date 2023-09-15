@@ -8,12 +8,13 @@ import authReducer from "./auth";
 import pharmacieReducer from "./slices/pharmacies";
 import medicamentReducer from "./slices/medicaments";
 import usersReducer from "./slices/users";
-import { pharmacyApi } from "./api/pharmacyApi";
+import { userApi } from "./api";
+import { pharmacyApi, medicineApi } from "./api";
 const persistConfig = {
   key: "root",
   storage,
   whiteList: ["auth", "parmacie", "medicament", "users"],
-  blackList: [],
+  //blackList: [],
 };
 
 const rootReducer = combineReducers({
@@ -29,8 +30,9 @@ export const store = configureStore({
     persistedReducer,
     [pharmacyApi.reducerPath]: pharmacyApi.reducer,
     //[userApi.reducerPath]: userApi.reducer,
+    [medicineApi.reducerPath]: medicineApi.reducer,
   },
-  middleware: [thunk, pharmacyApi.middleware],
+  middleware: [thunk, pharmacyApi.middleware, medicineApi.middleware],
 });
 
 setupListeners(store.dispatch);

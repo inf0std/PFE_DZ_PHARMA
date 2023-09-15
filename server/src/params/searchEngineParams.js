@@ -1,9 +1,9 @@
 const fs = require("fs");
+let paramsData = require("./params.json");
+const jsonFile = "./params.json";
 
-const jsonFile = "../params.json";
-let paramsData = {};
-
-function readParamsFromFile() {
+//let param;
+/* function readParamsFromFile() {
   try {
     const data = fs.readFileSync(jsonFile, "utf8");
     const parsedData = JSON.parse(data);
@@ -13,7 +13,7 @@ function readParamsFromFile() {
     console.log(error);
     return {};
   }
-}
+} */
 
 function writeParamsToFile(params) {
   const data = { params };

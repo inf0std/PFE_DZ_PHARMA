@@ -56,7 +56,9 @@ const AddStockModal = ({ close, notify }) => {
   const handleRevertQuantity = () => {
     setQuantity((quantity) => Math.floor(quantity / 10));
   };
-  const handleClose = () => {};
+  const handleClose = () => {
+    close();
+  };
   const handleAddStock = () => {
     console.log(
       "adding stock",
@@ -253,7 +255,9 @@ const AddStockModal = ({ close, notify }) => {
       <Modal.Footer>
         <Stack direction="horizontal" gap={2}>
           <div className="ms-auto" />
-          <Button variant="outline-secondary">Fermer</Button>
+          <Button variant="outline-secondary" onClick={handleClose}>
+            Fermer
+          </Button>
           <Button variant="outline-success" onClick={handleAddStock}>
             Ajouter Stcok
           </Button>

@@ -27,18 +27,14 @@ axios.interceptors.response.use(
   }
 );
 
-const axiosBaseQuery = async (
-  { url, params, body, headers, method },
-  api,
-  extraOptions
-) => {
+const axiosBaseQuery = async ({ url, params, body, headers, method }) => {
   try {
     const response = await axios({
       method,
       url: url,
       params,
       baseURL: baseApiUrl,
-      headers,
+      headers: { ...headers },
       data: body,
     });
     return { data: response.data };

@@ -11,12 +11,15 @@ import {
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import { FontAwesome5, Feather } from "react-native-vector-icons";
 import Animated, { FadeInRight, FadeOutRight } from "react-native-reanimated";
+import { useSelector, useDispatch } from "react-redux";
+import { setDisplayedResult } from "../redux/slices/cart/cartSlice";
 
 const PharmaList = ({ navigation }) => {
   const { width, height } = Dimensions.get("window");
-
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
   const [isVisible, setIsVisible] = React.useState(true);
-
+  console.log("__________________________cart______________________", cart);
   return (
     <View
       style={{
@@ -24,7 +27,9 @@ const PharmaList = ({ navigation }) => {
         backgroundColor: "#FFF",
         padding: 18,
         paddingVertical: 50,
-      }}>
+      }}
+    >
+      {/**back and count */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <MaterialCommunityIcons
           name="arrow-left"
@@ -40,19 +45,21 @@ const PharmaList = ({ navigation }) => {
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 10,
-          }}>
+          }}
+        >
           <Text style={{ color: "#FFF", fontSize: 23 }}>
             {isVisible ? `1` : "0"}
           </Text>
         </View>
       </View>
-
+      {/**result */}
       <Text
         style={{
           color: "#4fb69a",
           fontSize: 20,
           marginTop: 20,
-        }}>{`Resultats`}</Text>
+        }}
+      >{`Resultats`}</Text>
       <View
         style={{
           width: width - 10,
@@ -62,60 +69,91 @@ const PharmaList = ({ navigation }) => {
         }}
       />
 
-      {isVisible && (
+      {cart.results.map((result, index) => (
         <>
           <Animated.View
             entering={FadeInRight.delay(0).duration(0)}
-            exiting={FadeOutRight.delay(500).duration(500)}>
+            exiting={FadeOutRight.delay(500).duration(500)}
+          >
             <View style={{ flexDirection: "row", paddingVertical: 20 }}>
+              {/**pharmacie icon */}
               <View
                 style={{
                   alignSelf: "center",
-                  flex: 0.3,
+                  flex: 0.15,
                   alignItems: "center",
-                }}>
-                <FontAwesome5 name="clinic-medical" size={60} color="#4fb69a" />
+                }}
+              >
+                <FontAwesome5 name="clinic-medical" size={30} color="#4fb69a" />
               </View>
-              <View style={{ flex: 0.5 }}>
+
+              {/**details */}
+              <View style={{ flex: 0.75 }}>
                 <Text
                   style={{
                     color: "#818181",
                     fontSize: 18,
-                  }}>{`Pharmacie cherifi`}</Text>
-                {/*<Text
+                  }}
+                >{`score: ${result.score}`}</Text>
+                <Text
                   style={{
                     color: "#818181",
-                    fontSize: 14,
-                    marginTop: -5,
-                  }}>{`Add New Article`}</Text>*/}
+                    fontSize: 18,
+                  }}
+                >{`remoborse: ${result.remboursement} DZD`}</Text>
                 <Text
+                  style={{
+                    color: "#818181",
+                    fontSize: 18,
+                  }}
+                >{`distance: ${result.distence} km`}</Text>
+                <Text
+                  style={{
+                    color: "#818181",
+                    fontSize: 18,
+                  }}
+                >{`pharmacies: ${result.pharmacies.length}`}</Text>
+                {/* <Text
                   style={{
                     color: "#4fb69a",
                     fontSize: 14,
                     marginTop: 10,
-                  }}>{`Ouvert`}</Text>
+                  }}
+                >{`Ouvert`}</Text> */}
               </View>
 
+              {/**map icon */}
               <View
                 style={{
-                  flex: 0.2,
+                  flex: 0.1,
                   justifyContent: "space-around",
                   alignItems: "center",
-                }}>
+                }}
+              >
                 <View
                   style={{
                     width: 30,
-                    height: 30,
+                    height: 50,
                     backgroundColor: "#f9f9f9",
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: 10,
-                  }}>
-                  <Feather
+                  }}
+                >
+                  {/* <Feather
                     name="map-pin"
                     size={28}
                     color="#4fb69a"
                     onPress={() => navigation.navigate("Map")}
+                  /> */}
+                  <MaterialCommunityIcons
+                    name="map-marker-radius"
+                    size={35}
+                    color="#4fb69a"
+                    onPress={() => {
+                      dispatch(setDisplayedResult(index));
+                      navigation.navigate("Map");
+                    }}
                   />
                 </View>
               </View>
@@ -130,7 +168,7 @@ const PharmaList = ({ navigation }) => {
             />
           </Animated.View>
         </>
-      )}
+      ))}
 
       <TouchableOpacity
         style={{
@@ -141,7 +179,8 @@ const PharmaList = ({ navigation }) => {
           bottom: 5,
           left: width / 2 - 40,
         }}
-        onPress={() => setIsVisible((prev) => !prev)}>
+        onPress={() => setIsVisible((prev) => !prev)}
+      >
         <Text style={{ color: "#e74c3c", fontSize: 14 }}>{`clear all`}</Text>
       </TouchableOpacity>
     </View>

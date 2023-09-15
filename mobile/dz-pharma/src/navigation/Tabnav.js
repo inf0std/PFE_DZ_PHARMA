@@ -24,7 +24,8 @@ const CustomHeader = ({ username }) => {
 
   return (
     <View
-      style={{ flexDirection: "row", alignItems: "center", marginLeft: 20 }}>
+      style={{ flexDirection: "row", alignItems: "center", marginLeft: 20 }}
+    >
       <View
         style={{
           width: 40,
@@ -34,7 +35,8 @@ const CustomHeader = ({ username }) => {
           justifyContent: "center",
           alignItems: "center",
           marginRight: 10,
-        }}>
+        }}
+      >
         <Text style={{ color: "#FFF", fontSize: 16 }}>
           {getInitials(username)}
         </Text>
@@ -73,14 +75,15 @@ const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerRight: () => user && <CustomHeader username={user.username} />,
+        // headerRight: () => user && <CustomHeader username={user.username} />,
         headerRightContainerStyle: { marginRight: 20 },
-      }}>
+      }}
+    >
       {/* Profil screen */}
 
       {/* Search screen */}
       <Tab.Screen
-        name="Search"
+        name="Recherche"
         component={SearchScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useSyncExternalStore } from "react";
 import {
   View,
   Text,
@@ -11,15 +11,23 @@ import {
   FlatList,
   Button,
 } from "react-native";
-import { FontAwesome5, AntDesign } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import {
+  FontAwesome5,
+  AntDesign,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Fontisto,
+  Octicons,
+} from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
 import { medList } from "../redux/slices/meds/medsSlice";
-import { MaterialIcons } from "@expo/vector-icons";
+import { addMed } from "../redux/slices/cart/cartSlice";
+
 import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 const SearchScreen = ({ navigation }) => {
   const { width, height } = Dimensions.get("window");
   const { meds } = useSelector((state) => state.meds);
+  const cart = useSelector((state) => state.cart);
   const [searchText, setSearchText] = useState("");
   const [prescreption, setPrescreption] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -32,20 +40,11 @@ const SearchScreen = ({ navigation }) => {
 
   const addToPrescreption = (med) => () => {
     setPrescreption([...prescreption, med]);
+    dispatch(addMed(med));
     setSearchResults((searchResults) =>
       searchResults.filter((_med) => _med.ID !== med.ID)
     );
   };
-
-  /* useEffect(() => {
-    //fetch("h")
-
-    console.log("listing meds useEffect");
-
-    return () => {
-      meds.list.length == 0 && dispatch(medList());
-    };
-  }, []); */
 
   const resetPrescreption = () => {
     setPrescreption([]);
@@ -58,7 +57,7 @@ const SearchScreen = ({ navigation }) => {
   };
 
   const filterMeds = (search) => {
-    let exp = new RegExp(search);
+    let exp = new RegExp(search, "i");
 
     if (search !== "") {
       if (search.length > searchText.length && searchText != "") {
@@ -85,46 +84,6 @@ const SearchScreen = ({ navigation }) => {
     console.log("search", search);
   };
 
-  /* 
-  useEffect(() => {
-    // Fetch the list of pharmacies using Axios
-    axios
-      .get(`${API_URL}/list`)
-      .then((response) => {
-        setPharmacies(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching pharmacies:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    const search = async () => {
-      try {
-        const response = await axios.get(
-          `${API_URL}/searchMed?q=${searchText}`
-        );
-        setSearchResults(response.data);
-        console.log("result");
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    // Delay the search to avoid making too many requests as the user types
-    const delay = setTimeout(() => {
-      if (searchText.length > 0) {
-        search();
-      } else {
-        setSearchResults([]);
-      }
-    }, 300); // Adjust the delay time as needed
-
-    return () => clearTimeout(delay);
-  }, [searchText]);
- */
   return (
     <View style={styles.container}>
       <View
@@ -138,7 +97,8 @@ const SearchScreen = ({ navigation }) => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-        }}>
+        }}
+      >
         <TextInput
           value={searchText}
           onChangeText={(e) => {
@@ -146,8 +106,13 @@ const SearchScreen = ({ navigation }) => {
           }}
           style={{ flex: 1, color: "#4fb69a" }}
         />
-        <Button onPress={() => filterMeds("")} title="X" />
-        <FontAwesome5 name="times" size={24} color="#4fb69a" />
+        {/* <Button onPress={() => filterMeds("")} title="X" /> */}
+        <FontAwesome5
+          name="times"
+          size={30}
+          color="#4fb69a"
+          onPress={() => filterMeds("")}
+        />
       </View>
       {/* Your search implementation goes here */}
 
@@ -158,7 +123,8 @@ const SearchScreen = ({ navigation }) => {
             alignItems: "center",
             justifyContent: "space-between",
             padding: 20,
-          }}>
+          }}
+        >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text
               style={{
@@ -166,8 +132,10 @@ const SearchScreen = ({ navigation }) => {
                 marginLeft: 10,
                 color: "#151516",
                 marginBottom: -3,
-              }}></Text>
+              }}
+            ></Text>
           </View>
+
           <TouchableOpacity
             style={{
               position: "absolute",
@@ -179,17 +147,22 @@ const SearchScreen = ({ navigation }) => {
               backgroundColor: "#4fb69a",
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <Text
               style={{
                 fontSize: 12,
                 color: "#FFF",
-              }}>
-              {prescreption.length}
+              }}
+            >
+              {cart.meds.length}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("CartScreen")}>
-            <MaterialIcons name="shopping-cart" size={24} color="#313132" />
+            {/* <MaterialIcons name="shopping-cart" size={24} color="#313132" /> */}
+            {/*  <MaterialCommunityIcons name="pill" size={24} color="#313132" /> */}
+            {/*  <FontAwesome5 name="pills" size={24} color="#313132" /> */}
+            <Octicons name="checklist" size={35} color={"#313132"} />
           </TouchableOpacity>
         </View>
         <FlatList
@@ -205,7 +178,8 @@ const SearchScreen = ({ navigation }) => {
                 width: "98%",
                 margin: 2,
                 padding: 10,
-              }}>
+              }}
+            >
               <TouchableOpacity onPress={addToPrescreption(item)}>
                 <Text
                   style={{
@@ -214,14 +188,15 @@ const SearchScreen = ({ navigation }) => {
                     alignSelf: "center",
                     flexDirection: "row",
                     alignItems: "center",
-                  }}>
+                  }}
+                >
                   {`${item.MARQUE}\n${item.FORME}:${item.DOSAGE}`}
                 </Text>
               </TouchableOpacity>
             </View>
           )}
         />
-        <Text>{prescreption.length}</Text>
+        {/* <Text>{prescreption.length}</Text> */}
         {/* {pharmacies?.map((pharmacy) => (
           <PharmacyCard key={pharmacy.pharmacie_id} pharmacy={pharmacy} />
         ))} */}

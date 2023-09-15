@@ -57,6 +57,16 @@ const SignIn = ({ navigation }) => {
     <View style={{ flex: 1, backgroundColor: "#FFF", padding: 20 }}>
       <>
         <Animated.View entering={FadeInDown.delay(300).duration(300)}>
+          {/* <Image
+            source={require("./save.png")}
+            style={{
+              width: 175,
+              height: 175,
+              resizeMode: "contain",
+              alignSelf: "center",
+              marginTop: 20,
+            }}
+          /> */}
           <Image
             source={require("./save.png")}
             style={{
@@ -75,16 +85,7 @@ const SignIn = ({ navigation }) => {
               marginTop: 20,
             }}
           >
-            Welcome to Pharma_DZ
-          </Text>
-          <Text
-            style={{
-              fontSize: 16,
-              color: "#323646",
-              alignSelf: "center",
-            }}
-          >
-            Make your day great!
+            Bienvenue à Pharma DZ
           </Text>
         </Animated.View>
 
@@ -147,7 +148,7 @@ const SignIn = ({ navigation }) => {
               marginTop: 20,
             }}
           >
-            Password
+            Mot de passe
           </Text>
           <View
             style={{
@@ -232,7 +233,7 @@ const SignIn = ({ navigation }) => {
               textAlign: "center",
             }}
           >
-            Forgot password?
+            Mot de passe oublier?
           </Text>
 
           <TouchableOpacity
@@ -250,7 +251,7 @@ const SignIn = ({ navigation }) => {
                 color: "#323646",
               }}
             >
-              Don't have an account?{" "}
+              vou n'avez pas de compte?{" "}
             </Text>
             <Text
               style={{
@@ -258,7 +259,7 @@ const SignIn = ({ navigation }) => {
                 color: "#50e3c2",
               }}
             >
-              Register!
+              s'inscrire!
             </Text>
           </TouchableOpacity>
         </Animated.View>

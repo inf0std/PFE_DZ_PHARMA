@@ -1,42 +1,46 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import axiosBaseQuery from "../baseQuery";
-
+//import axiosBaseQuery from "../baseQuery";
+import { API_URL } from "../../../constants";
 export const pharmacyApi = createApi({
-  reducerPath: "UsersApi",
+  reducerPath: "PharmacyApi",
 
-  baseQuery: axiosBaseQuery,
-  entityTypes: ["Agencies"],
+  baseQuery: fetchBaseQuery({ baseUrl: API_URL + "/pharmacies" }),
+  entityTypes: ["Pharmacies"],
   endpoints: (builder) => ({
     fetchPharmacies: builder.query({
       query: () => ({
-        url: "pharmacy/list",
+        url: "/",
         method: "GET",
         params: {},
       }),
     }),
     fetchPharmacy: builder.query({
-      query: ({ id }) => ({ url: `pharmacies/${id}`, method: "GET" }),
+      query: ({ id }) => ({ url: `/${id}`, method: "GET" }),
     }),
     createPharmacy: builder.mutation({
       query: (body) => ({
-        url: `pharmacies/`,
+        url: `/`,
         method: "Post",
         body: body,
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
       }),
     }),
     addStockMutation: builder.mutation({
       query: (body) => ({
-        url: `pharmacies/${body.id}/addStock`,
+        url: `/${body.id}/addStock`,
         method: "POST",
+        body: body,
+      }),
+    }),
+    addSaleMutation: builder.mutation({
+      query: (body) => ({
+        url: `/${body.id}/sale`,
+        method: "post",
         body: body,
       }),
     }),
     deletePharmacy: builder.mutation({
       query: ({ id }) => ({
-        url: `pharmacies/${id}`,
+        url: `/${id}`,
         method: "DELETE",
       }),
     }),

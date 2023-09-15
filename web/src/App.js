@@ -4,6 +4,7 @@ import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
+
 import {
   UsersPage,
   LoginPage,
@@ -15,8 +16,9 @@ import {
   HomePage,
   Map,
   PharmaciesPage,
+  ProfilePage,
 } from "./pages";
-import Profil from "./pages/user/Profil";
+//import Profil from "./pages/user/Profil";
 import Pharma from "./pages/pharmacies/Pharmacie";
 import CreatePharmacyModal from "./pages/profile/components/createPharmacy";
 import AddStockModal from "./pages/profile/components/AddStockModal";
@@ -34,11 +36,19 @@ function App() {
     <BrowserRouter>
       <NotificationContainer />
       <Routes>
-        <Route path="/" element={<LoginPage notify={notify} />} />
+        <Route path="/dashboard" element={<Dashboard notify={notify} />}>
+          <Route
+            path="pharmacies"
+            element={<PharmaciesPage notify={notify} />}
+          />
+          <Route path="medicines" element={<MedicinesPage notify={notify} />} />
+        </Route>
+        <Route path="/login" element={<LoginPage notify={notify} />} />
         <Route path="/Map" element={<Map notify={notify} />} />
-        <Route path="/Profil/:id" element={<Profil notify={notify} />} />
+        <Route path="/Profile" element={<ProfilePage notify={notify} />} />
         <Route path="/SingleUserPage/:id" component={SingleUserPage} />
-        <Route path="/Pharma" element={<Pharma notify={notify} />} />
+        <Route path="/Parma" element={<Pharma notify={notify} />} />
+        <Route path="/" element={<CreatePharmacyModal />} />
         <Route
           path="test"
           element={<AddStockModal notify={notify} close={() => {}} />}

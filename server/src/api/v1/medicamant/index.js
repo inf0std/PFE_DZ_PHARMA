@@ -34,7 +34,7 @@ const handleShowMed = (req, res) => {
 
 const handleGetRelatedMeds = (req, res) => {
   const codedci = req.query.codedci;
-  console.log(codedci);
+  //console.log(codedci);
   let con = db.getConnection();
   con("medicament")
     .select("*")

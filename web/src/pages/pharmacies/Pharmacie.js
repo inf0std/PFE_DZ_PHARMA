@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "./Pharma.css"; // Import the CSS file for styling
 import axios from "axios"; // Import Axios
-const Pharma = () => {
+const Pharma = ({ close, notify, data }) => {
   const [idconneted, setIdConnected] = useState("");
   useEffect(() => {
     // Get the user ID from session storage

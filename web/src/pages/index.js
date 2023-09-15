@@ -8,6 +8,7 @@ import PharmaciesPage from "./pharmacies";
 import SignupPage from "./signup";
 import HomePage from "./home";
 import Map from "./map";
+import ProfilePage from "./profile";
 export {
   SignupPage,
   LoginPage,
@@ -19,4 +20,5 @@ export {
   PharmaciesPage,
   HomePage,
   Map,
+  ProfilePage,
 };

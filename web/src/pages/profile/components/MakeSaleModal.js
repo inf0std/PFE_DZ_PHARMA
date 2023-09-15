@@ -1,4 +1,18 @@
-import { useState } from "react";
+import { DivIcon } from "leaflet";
+import { useState, useEffect } from "react";
+import {
+  Form,
+  Modal,
+  Button,
+  Stack,
+  InputGroup,
+  Row,
+  Col,
+  ListGroup,
+  ListGroupItem,
+} from "react-bootstrap";
+
+import { CapsulePill, PlusCircle, PlusCircleFill } from "react-bootstrap-icons";
 
 const meds = [
   { ID: 1, NOM_DE_MARQUE: "PARA" },
@@ -7,13 +21,16 @@ const meds = [
   { ID: 4, NOM_DE_MARQUE: "PARA" },
   { ID: 5, NOM_DE_MARQUE: "PARA" },
 ];
-const MakeSaleModal = () => {
+const MakeSaleModal = ({ close, notify }) => {
   const [medId, setMedId] = useState(null);
   const [quantity, setQuantity] = useState(0);
   const [barCode, setBarCode] = useState("");
   const [choose, setChoose] = useState(false);
+  const [meds, setMeds] = useState([{}]);
 
-  const handleClose = () => {};
+  const handleClose = () => {
+    close && close();
+  };
   const handleDigitClick = (value) => () => {
     setQuantity((quantity) => quantity * 10 + value);
   };
@@ -24,6 +41,14 @@ const MakeSaleModal = () => {
 
   const handleRevertQuantity = () => {
     setQuantity((quantity) => Math.floor(quantity / 10));
+  };
+
+  const removeMed = (index) => {
+    setMeds((meds) => meds.filter((_, i) => i != index));
+  };
+
+  const addMed = (med) => {
+    //setMeds(meds=>[...meds, ])
   };
 
   useEffect(() => {
@@ -53,14 +78,14 @@ const MakeSaleModal = () => {
      } */
   }, [choose]);
   return (
-    <Modal size="md" show>
+    <Modal size="lg" show>
       <Modal.Header>
-        <Modal.Title>AJOUTER STOCK:</Modal.Title>
+        <Modal.Title>Vente:</Modal.Title>
         <Button className="btn-close" onClick={handleClose}></Button>
       </Modal.Header>
       <Modal.Body>
         <Row>
-          <Col className="fieldset">
+          <Col className="fieldset me-1 shadow">
             <Stack gap={2}>
               <InputGroup style={{ width: "100%" }}>
                 <InputGroup.Text>
@@ -98,7 +123,10 @@ const MakeSaleModal = () => {
                 //hidden
               />
             </Stack>
-            <Row style={{ width: "100%", margin: "auto" }}>
+            <Row
+              className="mt-1 mb-2"
+              style={{ width: "100%", margin: "auto" }}
+            >
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
@@ -200,6 +228,25 @@ const MakeSaleModal = () => {
                 {"<<"}
               </Button>
             </Row>
+
+            <Button variant="success">
+              Ajouter &nbsp;
+              <PlusCircle />
+            </Button>
+          </Col>
+          <Col className="fieldset shadow">
+            <ListGroup>
+              {meds?.map((med, index) => (
+                <ListGroupItem className="shadow my-1" key={index}>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <span>{med?.med?.NOM_DE_MARQUE ?? "fghjkl"}</span>
+                    <span>{med?.quantity ?? 1}</span>
+                  </div>
+                </ListGroupItem>
+              ))}
+            </ListGroup>
           </Col>
         </Row>
       </Modal.Body>
@@ -207,8 +254,11 @@ const MakeSaleModal = () => {
         <Stack direction="horizontal" gap={2}>
           <div className="ms-auto" />
           <Button variant="outline-secondary">Fermer</Button>
-          <Button variant="outline-success" onClick={handleAddStock}>
-            Ajouter Stcok
+          <Button
+            variant="outline-success"
+            disabled={meds.length == 0} //onClick={handleAddStock}
+          >
+            Vendre
           </Button>
         </Stack>
       </Modal.Footer>

@@ -16,6 +16,7 @@ const authRouter = express.Router();
 authRouter.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
 
+  console.log(req.body);
   console.log(email);
   // Validate incoming data (you can use a validation library like Joi here)
 
@@ -36,7 +37,7 @@ authRouter.post("/signup", async (req, res) => {
       password: hashedPassword,
     });
 
-    res.json({ message: "User registered successfully" });
+    res.json({ message: "User registered successfully", data: newUser });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ error: "Internal Server Error" });

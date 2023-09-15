@@ -1,5 +1,5 @@
 // MapScreen.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,18 +9,43 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Button,
 } from "react-native";
-import { FontAwesome5, AntDesign, MaterialIcons } from "@expo/vector-icons";
-import PharmacyCard from "../components/PharmacyCard";
-import axios from "axios";
-import { API_URL } from "../../config";
+import {
+  FontAwesome5,
+  AntDesign,
+  MaterialIcons,
+  Fontisto,
+} from "@expo/vector-icons";
 
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
+import { useSelector } from "react-redux";
+import { Linking } from "react-native";
 
 const MapScreen = () => {
   const [userLocation, setUserLocation] = useState(null);
   const [locationPermission, setLocationPermission] = useState(null);
+  const cart = useSelector((state) => state.cart);
+  console.log("___________________cart_____________________", cart);
+  const openItenerary = () => {
+    const waypoints = [
+      userLocation,
+      ...cart.results[cart.displayedResult].pharmacies,
+    ]
+      .map((pharma) => `${pharma.latitude},${pharma.longitude}`)
+      .join("|");
+
+    const origin = userLocation; //cart.results[cart.displayedResult].pharmacies[0];
+    const destination =
+      cart.results[cart.displayedResult].pharmacies[
+        cart.results[cart.displayedResult].pharmacies.length - 1
+      ];
+
+    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&waypoints=${waypoints}`;
+
+    Linking.openURL(url);
+  };
 
   useEffect(() => {
     // Request location permissions and get user's location
@@ -41,7 +66,7 @@ const MapScreen = () => {
   }, []);
 
   const [pharmacies, setPharmacies] = useState([]);
-
+  /* 
   useEffect(() => {
     // Fetch the list of pharmacies using Axios
     axios
@@ -58,7 +83,7 @@ const MapScreen = () => {
       .catch((error) => {
         console.error("Error fetching pharmacies:", error);
       });
-  }, []);
+  }, []); */
 
   return (
     <View style={styles.container}>
@@ -71,24 +96,37 @@ const MapScreen = () => {
               longitude: userLocation.longitude,
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
-            }}>
+            }}
+          >
             <Marker
               coordinate={userLocation}
-              title="You are here"
-              description="Your current location"
+              title="votre position"
+              description="votre position"
             />
-            {pharmacies?.map((pharmacy) => (
-              <Marker
-                key={pharmacy.pharmacie_id}
-                coordinate={{
-                  latitude: pharmacy.latitude,
-                  longitude: pharmacy.longitude,
-                }}
-                title={pharmacy.name}
-                description={pharmacy.phone}>
-                <MaterialIcons name="local-pharmacy" size={40} color="red" />
-              </Marker>
-            ))}
+            {cart.results[cart.displayedResult].pharmacies?.map(
+              (pharmacy, index) => (
+                <Marker
+                  {...console.log(pharmacy)}
+                  key={index}
+                  coordinate={{
+                    latitude: pharmacy.latitude,
+                    longitude: pharmacy.longitude,
+                  }}
+                  title="pharmacie" //{pharmacy.name}
+                  description="test" //{pharmacy.phone}
+                  pinColor="#002200"
+                />
+              )
+            )}
+            <Marker
+              coordinate={{
+                latitude: 36.712691747354654,
+                longitude: 3.99353495582114,
+              }}
+              title="test2"
+              description="test2"
+              pinColor="green"
+            />
           </MapView>
         ) : (
           <Text>Loading...</Text>
@@ -99,6 +137,15 @@ const MapScreen = () => {
           device settings.
         </Text>
       )}
+      <View style={{ position: "absolute", bottom: 19, right: 52 }}>
+        {/* <Button title="Open Itinerary" onPress={openDirections} /> */}
+        <MaterialIcons
+          name="directions"
+          size={35}
+          onPress={openItenerary}
+          color={"red"}
+        />
+      </View>
     </View>
   );
 };
@@ -115,3 +162,10 @@ const styles = StyleSheet.create({
 });
 
 export default MapScreen;
+{
+  /* <MaterialIcons name="local-pharmacy" size={40} color="red" /> */
+}
+{
+  /* <Fontisto name="map-marker-alt" size={20} color="green" />
+                </Marker> */
+}

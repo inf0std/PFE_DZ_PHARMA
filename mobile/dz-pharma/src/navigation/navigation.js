@@ -18,6 +18,17 @@ const StackNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+      {/*
+      <Stack.Screen
         name="PhamaList"
         component={PhamaList}
         options={{ headerShown: false }}
@@ -30,22 +41,11 @@ const StackNavigator = () => {
       />
 
       <Stack.Screen
-        name="SignIn"
-        component={SignIn}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SignUp"
-        component={SignUp}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
         name="Editprofile"
         component={Editprofile}
         options={{ headerShown: false }}
       />
-
+      */}
       {/* Add more screens as needed */}
     </Stack.Navigator>
   );

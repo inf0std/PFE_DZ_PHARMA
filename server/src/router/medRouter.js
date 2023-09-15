@@ -129,7 +129,7 @@ async function getMatchingMedicationsByDCI(ordonnance) {
     throw new Error("An error occurred while retrieving medications.");
   }
 }
-
+/* 
 async function testFunction() {
   try {
     const ordonnance = [
@@ -146,6 +146,6 @@ async function testFunction() {
   }
 }
 
-testFunction();
+testFunction(); */
 
 module.exports = medRouter;

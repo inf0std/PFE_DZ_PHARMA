@@ -116,155 +116,168 @@ const CreatePharmacyModal = ({ notify, close }) => {
     return null;
   };
   return (
-    <Modal size="lg" show>
+    <Modal size="xl" show>
       {console.log(getValues())}
       <Modal.Header className="text-center">
         <Modal.Title className="text-center">Creer Une Pharmacie:</Modal.Title>
-        <Button className="btn-close" />
+        <Button className="btn-close" onClick={handleClose} />
       </Modal.Header>
       <Modal.Body>
-        <Form noValidate hidden={showMap}>
-          <Form.Control type="text" {...register("userId")} hidden disabled />
-          <Stack gap={2}>
-            <FloatingLabel controlId="1" label="Nom">
+        <Row>
+          <Col md={5}>
+            <Form noValidate hidden={showMap}>
               <Form.Control
                 type="text"
-                {...register("name", { ...requiredRule, ...frenchRule })}
+                {...register("userId")}
+                hidden
+                disabled
               />
-              {errors?.name && (
-                <span className="text-danger">{errors?.name?.message}</span>
-              )}
-            </FloatingLabel>
-            <div className="fieldset">
-              <strong className="legend">Position:</strong>
               <Stack gap={2}>
-                <Form.Group>
-                  <InputGroup>
-                    <InputGroup.Text>
-                      <GeoAltFill size={20} />
-                    </InputGroup.Text>
-                    <Form.Control
-                      type="number"
-                      placeholder="longitude"
-                      {...register("longitude", { ...longitudeRule })}
-                    />
-                  </InputGroup>
-                  {errors?.longitude && (
+                <FloatingLabel controlId="1" label="Nom">
+                  <Form.Control
+                    type="text"
+                    {...register("name", { ...requiredRule, ...frenchRule })}
+                  />
+                  {errors?.name && (
+                    <span className="text-danger">{errors?.name?.message}</span>
+                  )}
+                </FloatingLabel>
+                <div className="fieldset">
+                  <strong className="legend">Position:</strong>
+                  <Stack gap={2}>
+                    <Form.Group>
+                      <InputGroup>
+                        <InputGroup.Text>
+                          <GeoAltFill size={20} />
+                        </InputGroup.Text>
+                        <Form.Control
+                          type="number"
+                          placeholder="longitude"
+                          {...register("longitude", { ...longitudeRule })}
+                        />
+                      </InputGroup>
+                      {errors?.longitude && (
+                        <span className="text-danger">
+                          {errors?.longitude?.message}
+                        </span>
+                      )}
+                    </Form.Group>
+
+                    <Form.Group>
+                      <InputGroup>
+                        <InputGroup.Text>
+                          <GeoAltFill size={20} />
+                        </InputGroup.Text>
+                        <Form.Control
+                          type="number"
+                          placeholder="latitude"
+                          {...register("latitude", { ...latitudeRule })}
+                        />
+                      </InputGroup>
+                      {errors?.latitude && (
+                        <span className="text-danger">
+                          {errors?.latitude?.message}
+                        </span>
+                      )}
+                    </Form.Group>
+
+                    <span className="text-center text-success">
+                      <a
+                        onClick={() => {
+                          console.log("map");
+                          setSHowMap(true);
+                        }}
+                      >
+                        <GeoAltFill size={20} />+
+                      </a>
+                    </span>
+                  </Stack>
+                </div>
+                <FloatingLabel controlId="2" label="Telephone">
+                  <Form.Control
+                    type="text"
+                    {...register("phone", {
+                      ...phoneRule,
+                    })}
+                  />
+                  {errors?.phone && (
                     <span className="text-danger">
-                      {errors?.longitude?.message}
+                      {errors?.phone?.message}
                     </span>
                   )}
-                </Form.Group>
-
-                <Form.Group>
-                  <InputGroup>
-                    <InputGroup.Text>
-                      <GeoAltFill size={20} />
-                    </InputGroup.Text>
-                    <Form.Control
-                      type="number"
-                      placeholder="latitude"
-                      {...register("latitude", { ...latitudeRule })}
-                    />
-                  </InputGroup>
-                  {errors?.latitude && (
-                    <span className="text-danger">
-                      {errors?.latitude?.message}
-                    </span>
-                  )}
-                </Form.Group>
-
-                <span className="text-center text-success">
-                  <a
-                    onClick={() => {
-                      console.log("map");
-                      setSHowMap(true);
-                    }}
-                  >
-                    <GeoAltFill size={20} />+
-                  </a>
-                </span>
+                </FloatingLabel>
               </Stack>
-            </div>
-            <FloatingLabel controlId="2" label="Telephone">
-              <Form.Control
-                type="text"
-                {...register("phone", {
-                  ...phoneRule,
-                })}
-              />
-              {errors?.phone && (
-                <span className="text-danger">{errors?.phone?.message}</span>
-              )}
-            </FloatingLabel>
-          </Stack>
-        </Form>
-
-        {showMap && (
-          <div
-            className="w-100 justify-content-center"
-            style={{ width: "100%" }}
-          >
-            <Row>
-              <Col md="auto">
-                <span className="me-2 text-success">
-                  <a
-                    onClick={() => {
-                      setSHowMap(false);
-                    }}
-                  >
-                    <Check2Circle size={32} />
-                  </a>
-                </span>
-              </Col>
-              <Col>
-                <Form.Group>
-                  <InputGroup>
-                    <InputGroup.Text>
-                      <GeoAltFill size={20} />
-                    </InputGroup.Text>
-                    <Form.Control
-                      style={{ width: "auto" }}
-                      value={position.latitude}
-                      placeholder="Latitude"
-                      type="number"
-                    />
-                    <InputGroup.Text>
-                      <At size={20} />
-                    </InputGroup.Text>
-
-                    <Form.Control
-                      style={{ width: "auto" }}
-                      placeholder="Longitude"
-                      type="number"
-                      value={position.longitude}
-                    />
-                    {/*  <InputGroup.Text></InputGroup.Text> */}
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-            </Row>
-            <br />
-            {console.log([position.latitude, position.longitude])}
-            <MapContainer
-              center={[position.latitude, position.longitude]}
-              zoom={17}
-              style={{ width: "100%", height: "50vh" }}
+            </Form>
+          </Col>
+          <Col md={7}>
+            <div
+              className="w-100 justify-content-center"
+              style={{ width: "100%" }}
             >
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <MapClickHandler />
-              <Marker
-                icon={customIcon}
-                position={[position.latitude, position.longitude]}
+              {/*  <Row>
+                <Col md="auto">
+                  <span className="me-2 text-success">
+                    <a
+                      onClick={() => {
+                        setSHowMap(false);
+                      }}
+                    >
+                      <Check2Circle size={32} />
+                    </a>
+                  </span>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <InputGroup>
+                      <InputGroup.Text>
+                        <GeoAltFill size={20} />
+                      </InputGroup.Text>
+                      <Form.Control
+                        style={{ width: "auto" }}
+                        value={position.latitude}
+                        placeholder="Latitude"
+                        type="number"
+                      />
+                      <InputGroup.Text>
+                        <At size={20} />
+                      </InputGroup.Text>
+
+                      <Form.Control
+                        style={{ width: "auto" }}
+                        placeholder="Longitude"
+                        type="number"
+                        value={position.longitude}
+                      />
+                      {/*  <InputGroup.Text></InputGroup.Text>}
+                    </InputGroup>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <br /> */}
+              {console.log([position.latitude, position.longitude])}
+              <MapContainer
+                center={[position.latitude, position.longitude]}
+                zoom={17}
+                style={{ width: "100%", height: "50vh" }}
               >
-                <Popup>
-                  <GeoAltFill />
-                </Popup>
-              </Marker>
-            </MapContainer>
-            <div style={{ width: "100%" }}></div>
-          </div>
-        )}
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <MapClickHandler />
+                <Marker
+                  icon={customIcon}
+                  position={[position.latitude, position.longitude]}
+                >
+                  <Popup>
+                    <GeoAltFill />
+                  </Popup>
+                </Marker>
+              </MapContainer>
+              {/* 
+              <div style={{ width: "100%" }}></div> */}
+            </div>
+          </Col>
+        </Row>
+        {/* 
+        {showMap && <></>} */}
       </Modal.Body>
       <Modal.Footer>
         <Stack direction="horizontal" gap={2}>

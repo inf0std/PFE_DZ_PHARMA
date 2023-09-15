@@ -7,6 +7,7 @@ const userRouter = require("./src/router/userRouter");
 const pharmaRouter = require("./src/router/pharmaRouter");
 const medRouter = require("./src/router/medRouter");
 const authRouter = require("./src/router/auth");
+const searchRouter = require("./src/router/search");
 const app = express();
 app.use(cors());
 // Place bodyParser before the router middleware
@@ -18,6 +19,7 @@ app.use("/auth/v1", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/pharmacy", pharmaRouter);
 app.use("/api/v1/medicaments", medRouter);
+app.use("/api/v1/search", searchRouter);
 
 //starting server
 app.listen(8000, () => {

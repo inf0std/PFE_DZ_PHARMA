@@ -15,9 +15,6 @@ const DashNavbar = () => {
               <Nav.Link as={NavLink} to="/dashboard/pharmacies">
                 Pharmacies
               </Nav.Link>
-              <Nav.Link as={NavLink} to="/dashboard/users">
-                Utilisateurs
-              </Nav.Link>
               <Nav.Link as={NavLink} to="/dashboard/medicines">
                 Medicaments
               </Nav.Link>
@@ -26,9 +23,6 @@ const DashNavbar = () => {
           <Clock />
         </Container>
       </Navbar>
-      <Container fluid>
-        <Row className="bg-success">zqertfyguhijokl</Row>
-      </Container>
     </>
   );
 };
