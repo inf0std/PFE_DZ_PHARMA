@@ -67,7 +67,7 @@ authRouter.post("/signin", async (req, res) => {
       pharmacie = await knex("pharmacie")
         .select("*")
         .where("id_owner", existingUser.user_id);
-    pharmacie
+    pharmacie?.length
       ? res.json({
           message: "User logged in successfully",
           user: {
@@ -75,7 +75,7 @@ authRouter.post("/signin", async (req, res) => {
             username: existingUser.username,
             email: existingUser.email,
             is_admin: existingUser.is_admin,
-            pharmacie: pharmacie,
+            pharmacie: pharmacie[0],
           },
         })
       : res.json({

@@ -17,8 +17,8 @@ const searchRouter = require("./src/router/search");
 
 app.use("/auth/v1", authRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/pharmacy", pharmaRouter);
-app.use("/api/v1/medicaments", medRouter);
+app.use("/api/v1/pharmacies", pharmaRouter);
+app.use("/api/v1/medicines", medRouter);
 app.use("/api/v1/search", searchRouter);
 
 //starting server

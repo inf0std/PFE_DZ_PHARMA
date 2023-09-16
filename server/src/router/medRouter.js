@@ -56,14 +56,15 @@ medRouter.get("/", async (req, res) => {
 medRouter.post("/addStock", async (req, res) => {
   try {
     const pharmacie_id = req.query.pharmacie_id;
-    const { medicament_id, quantity, expiration_date } = req.body;
+    const { medicament_id, quantity, expiration } = req.body;
+    console.log(pharmacie_id, medicament_id, quantity, expiration);
 
     await knex("stock").insert({
       pharmacie_id,
-      medicament_id,
-      stock_date: new Date(),
+      med_id: medicament_id,
+      date_added: new Date(),
       quantity,
-      expiration_date,
+      expiration,
     });
 
     res.json({ message: "Stock entry added successfully" });
@@ -74,8 +75,12 @@ medRouter.post("/addStock", async (req, res) => {
 });
 medRouter.get("/getStockList", async (req, res) => {
   try {
-    const pharmacie_id = req.query.pharmaId;
+    const pharmacie_id = req.query.pharmacie_id;
     console.log(pharmacie_id);
+    if (!pharmacie_id) {
+      res.json([]);
+      return;
+    }
 
     const stockList = await knex("stock")
       .select(
@@ -83,7 +88,7 @@ medRouter.get("/getStockList", async (req, res) => {
         "medicament.id as medicament_id",
         "medicament.nom_de_marque"
       )
-      .join("medicament", "stock.medicament_id", "=", "medicament.id")
+      .join("medicament", "stock.med_id", "=", "medicament.id")
       .where("stock.pharmacie_id", pharmacie_id);
 
     res.json(stockList);

@@ -18,6 +18,7 @@ pharmaRouter.post("/", async (req, res) => {
   try {
     // const id_owner = req.params.userId;
     const { name, latitude, longitude, phone, userId: id_owner } = req.body;
+    console.log("creating pharma", name, latitude, longitude, phone, id_owner);
     const newPharmacy = { id_owner, name, latitude, longitude, phone };
 
     // Insert the new pharmacy record and get its ID
@@ -106,4 +107,8 @@ pharmaRouter.delete("/:id", async (req, res) => {
   }
 });
 
+pharmaRouter.post("/:id/addStock", async (req, res) => {
+  try {
+  } catch (e) {}
+});
 module.exports = pharmaRouter;
