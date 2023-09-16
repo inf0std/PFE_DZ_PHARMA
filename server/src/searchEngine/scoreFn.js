@@ -87,18 +87,18 @@ const setCover = (matrix) => {
     .slice(0, params.getParams().nb_result);
 
   chains = bestCumuls.map((best) => best.chain);
-  console.log("best", bestCumuls);
+  //console.log("best", bestCumuls);
   const indexes = matrix.map((_, i) => i);
 
   for (let _ = 0; _ < params.getParams().nb_pharma_result_max; _++) {
     let addedChains = [];
-    console.log("________________________________");
-    console.log("iteration ", _);
+    //console.log("________________________________");
+    //console.log("iteration ", _);
 
-    console.log("________________________________");
+    //console.log("________________________________");
     chains.forEach((chain, i_ch) => {
-      console.log("chain", chain, "index", i_ch);
-      console.log("________________________________");
+      //console.log("chain", chain, "index", i_ch);
+      //console.log("________________________________");
       let testCumul = [];
 
       indexes
@@ -112,18 +112,18 @@ const setCover = (matrix) => {
           })
         );
 
-      //console.log(testCumul);
-      console.log("________________________________");
+      ////console.log(testCumul);
+      //console.log("________________________________");
       let max = testCumul.reduce(
         (max, e, index) =>
           testCumul[max].value > testCumul[index].value ? max : index,
         0
       );
-      console.log(
+      /*//console.log(
         "added",
         testCumul.filter((test) => test.value == testCumul[max].value)
-      );
-      console.log("testcumul", testCumul[max], "\nbest", bestCumuls[i_ch]);
+      );*/
+      //console.log("testcumul", testCumul[max], "\nbest", bestCumuls[i_ch]);
       addedChains.push([
         i_ch,
         testCumul[max].value > bestCumuls[i_ch].value
@@ -131,10 +131,10 @@ const setCover = (matrix) => {
           : [],
       ]);
     });
-    console.log("addedchains", addedChains[0][1].length);
+    //console.log("addedchains", addedChains[0][1].length);
 
     chains = addedChains.reduce((acc, elem) => {
-      //console.log(elem);
+      ////console.log(elem);
       if (elem[1].length == 0) {
         return [...acc, chains[elem[0]]];
       } else {
@@ -152,16 +152,16 @@ const setCover = (matrix) => {
         value: cumul.value.filter((e) => e > 0).length,
       }));
 
-    console.log("chains", chains, "\nbest", bestCumuls);
+    //console.log("chains", chains, "\nbest", bestCumuls);
     //let newChains =
   }
   return chains;
 };
 
 const constructMinExpirationGlobal = (matExpiration) => {
-  console.log("E construct min", matExpiration);
+  //console.log("E construct min", matExpiration);
   return matExpiration.reduce((acc, elem) => {
-    // console.log("acc", acc);
+    // //console.log("acc", acc);
     return acc.map((ac, i) => {
       if (elem[i] && ac) return ac < elem[i] ? ac : elem[i];
       if (elem[i]) return elem[i];
@@ -183,21 +183,21 @@ const constructPharmciesChains = (matQuantity) => {
 };
 
 const scoreDistence = (chains, pharmacies, mat) => {
-  console.log("pharmacies", pharmacies);
-  console.log("chains", chains);
+  //console.log("pharmacies", pharmacies);
+  //console.log("chains", chains);
   let dists = chains.map((chain) => {
-    console.log(
+    /*//console.log(
       "test selection",
       pharmacies
         .map((ph, index) => ({ ph, index }))
         .filter((_, index) => chain.some((i) => i == index))
-    );
+    );*/
     let selected = pharmacies
       .map((ph, index) => ({ ph, index }))
       .filter((_, index) => chain.some((i) => i == index));
-    console.log("selected 1", selected);
+    //console.log("selected 1", selected);
     selected = selected.sort((p1, p2) => p1.ph.distance - p2.ph.distance);
-    console.log("selected", selected);
+    //console.log("selected", selected);
     return {
       order: [...selected /* .map((_) => _.ph) */],
       distance: selected.reduce((acc, ph) => acc + ph.ph.distance, 0),
@@ -215,7 +215,7 @@ const scoreExpiration = (chains, exp, minE) => {
     let minChain = constructMinExpirationGlobal(
       exp.filter((_, i) => chain.includes(i))
     );
-    console.log(minChain);
+    //console.log(minChain);
     return (
       minChain.reduce(
         (score, elem, i) =>
@@ -230,8 +230,8 @@ const finalScore = (chains, exp, dist, quant, pharmacies, mat) => {
   let scoreCoeff = params.getParams().coefficients;
   const maxQ = constructMaxQuantityGlobal(quant);
   const minE = constructMinExpirationGlobal(exp);
-  console.log("minE", minE);
-  console.log("maxQ", maxQ);
+  //console.log("minE", minE);
+  //console.log("maxQ", maxQ);
   const scoreQ = scoreQuantity(chains, quant, maxQ);
   const scoreE = scoreExpiration(chains, exp, minE);
   const scoreD = scoreDistence(chains, pharmacies, []);
@@ -250,12 +250,12 @@ const finalScore = (chains, exp, dist, quant, pharmacies, mat) => {
 };
 
 const scoreQuantity = (chains, quant, maxQ) => {
-  console.log("\ns_Q\n", chains);
+  //console.log("\ns_Q\n", chains);
   return chains.map((chain) => {
     let maxChain = constructMaxQuantityGlobal(
       quant.filter((_, i) => chain.includes(i))
     );
-    console.log("maxchain", maxChain, maxQ.length);
+    //console.log("maxchain", maxChain, maxQ.length);
 
     return (
       maxChain.reduce(
@@ -286,7 +286,7 @@ const test = async () => {
     quantity.some((_) => _.pharmacie_id == pharma.pharmacie_id)
   );
   let mat = await createPharmaDistenceMatrix(pharmacies);
-  console.log(
+  /*//console.log(
     finalScore(
       setCover(quantityIndex(quantity)),
       expirationIndex(quantity),
@@ -294,7 +294,7 @@ const test = async () => {
       quantityIndex(quantity),
       pharmacies
     )
-  );
+  );*/
 };
 
 test();

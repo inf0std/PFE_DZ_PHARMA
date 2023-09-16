@@ -124,14 +124,13 @@ const medIdsFromQuantity = (quantities) => {
 };
 
 const makeSearch = async (req, res) => {
+  console.log(req);
+  console.log(req.body);
   let pharmacies = await createPharmaDistenceIndex(req.body.position);
   let quantity = await createIndexFromIDs(req.body.ids, pharmacies);
   pharmacies = pharmacies.filter((pharma) =>
     quantity.some((_) => _.pharmacie_id == pharma.pharmacie_id)
   );
-  //let mat = await createPharmaDistenceMatrix(pharmacies);
-
-  //console.log(medIdsFromQuantity(quantity));
   res.json({
     ...finalScore(
       setCover(quantityIndex(quantity)),
@@ -140,27 +139,6 @@ const makeSearch = async (req, res) => {
       quantityIndex(quantity),
       pharmacies
     ),
-    /*   maxQ: constructMaxQuantityGlobal([
-      [12, 0, 0, 0, 0, 0, 30],
-      [11, 11, 0, 0, 0, 0, 10],
-      [11, 11, 0, 10, 110, 0, 0],
-      [0, 0, 4, 12, 0, 0, 15],
-      [0, 0, 20, 0, 30, 50, 0],
-      [11, 11, 0, 40, 0, 50, 0],
-    ]),
-    chains: constructPharmciesChains([
-      [12, 0, 0, 0, 0, 0, 30],
-      [11, 11, 0, 0, 0, 0, 10],
-      [11, 11, 0, 10, 110, 0, 0],
-      [0, 0, 4, 12, 0, 0, 15],
-      [0, 0, 20, 0, 30, 50, 0],
-      [11, 11, 0, 40, 0, 50, 0],
-    ]),
-    minE: constructMinExpirationGlobal([
-      [100, 890, null, 34, 75, null, 98, 111],
-      [101, 800, 49, 24, 65, null, 98, 111],
-      [120, 820, 450, null, 76, null, 98, 111],
-    ]), */
   });
 };
 
