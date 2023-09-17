@@ -8,7 +8,7 @@ export const medList = createAsyncThunk("meds/list", async (thunkAPI) => {
   console.log("listing meds in slice");
   try {
     console.log("listing meds");
-    const response = await fetch(`${HOST}/${baseUrl}/medicaments`, {
+    const response = await fetch(`${HOST}/${baseUrl}/medicines`, {
       method: "GET",
       headers: {
         Accept: "application/json",

@@ -7,6 +7,7 @@ import SignIn from "../screens/SignIn";
 import Editprofile from "../screens/Editprofile";
 import BottomTab from "./Tabnav";
 import PhamaList from "../screens/PharmaList";
+import MapScreen from "../screens/MapScreen";
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -27,7 +28,7 @@ const StackNavigator = () => {
         component={SignUp}
         options={{ headerShown: false }}
       />
-      {/*
+
       <Stack.Screen
         name="PhamaList"
         component={PhamaList}
@@ -45,7 +46,12 @@ const StackNavigator = () => {
         component={Editprofile}
         options={{ headerShown: false }}
       />
-      */}
+      <Stack.Screen
+        name="Map"
+        component={MapScreen}
+        options={{ headerShown: false }}
+      />
+
       {/* Add more screens as needed */}
     </Stack.Navigator>
   );

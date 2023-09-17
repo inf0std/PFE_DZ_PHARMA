@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons"; // Import Ionicons from @expo/vec
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import Profil from "../screens/Profil";
 import SearchScreen from "../screens/SearchScreen"; // Import the SearchScreen component
-import MapScreen from "../screens/MapScreen"; // Import the MapScreen component
+import LocalMapScreen from "../screens/localMapScreen"; // Import the MapScreen component
 import getUserIdFromStorage from "../utils/storageUtils";
 import { API_URL } from "../../config";
 import axios from "axios";
@@ -24,8 +24,7 @@ const CustomHeader = ({ username }) => {
 
   return (
     <View
-      style={{ flexDirection: "row", alignItems: "center", marginLeft: 20 }}
-    >
+      style={{ flexDirection: "row", alignItems: "center", marginLeft: 20 }}>
       <View
         style={{
           width: 40,
@@ -35,8 +34,7 @@ const CustomHeader = ({ username }) => {
           justifyContent: "center",
           alignItems: "center",
           marginRight: 10,
-        }}
-      >
+        }}>
         <Text style={{ color: "#FFF", fontSize: 16 }}>
           {getInitials(username)}
         </Text>
@@ -77,8 +75,7 @@ const BottomTabNavigator = () => {
       screenOptions={{
         // headerRight: () => user && <CustomHeader username={user.username} />,
         headerRightContainerStyle: { marginRight: 20 },
-      }}
-    >
+      }}>
       {/* Profil screen */}
 
       {/* Search screen */}
@@ -94,8 +91,8 @@ const BottomTabNavigator = () => {
 
       {/* Map screen */}
       <Tab.Screen
-        name="Map"
-        component={MapScreen}
+        name="LocalMap"
+        component={LocalMapScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" color="#50e3c2" size={size} />

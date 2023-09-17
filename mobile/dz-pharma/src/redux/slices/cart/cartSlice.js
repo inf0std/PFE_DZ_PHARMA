@@ -1,30 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import axios from "axios";
 import { HOST } from "../../../constants";
 
 const findPrescription = createAsyncThunk(
   "cart/find",
-  async (data, thunkAPI) => {
+  async (body, thunkAPI) => {
+    //console.log("data", data);
     try {
-      const response = await fetch(`${HOST}/api/v1/search`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      //console.log("search response", response);
-      const data = await response.json();
-      //console.log("search result", data);
-      if (!response.ok) {
-        //console.log("error searching", response);
-        return thunkAPI.rejectWithValue({
-          error: "echec de connection",
-          data,
-        });
-      }
-      return data;
+      const response = await axios
+        .post(`${HOST}/api/v1/search`, {
+          ...body,
+        })
+        .then();
+      console.log(response.data);
+
+      return response.data;
     } catch (e) {
       //console.log("error searcing ________________________", e);
       return thunkAPI.rejectWithValue({
@@ -37,20 +28,9 @@ const findPrescription = createAsyncThunk(
 
 const initialState = {
   meds: [],
-  results: [
-    {
-      score: 10,
-      distence: 1.5,
-      remboursement: 3000,
-      pharmacies: [
-        {
-          nom: "chirifi",
-          longitude: 2.99353495582114,
-          latitude: 36.712691747354654,
-        },
-      ],
-    },
-  ],
+  results: null,
+  error: false,
+  fetching: false,
   displayedResult: null,
 };
 
@@ -73,16 +53,31 @@ const cartSlice = createSlice({
     setDisplayedResult: (state, { payload }) => {
       state.displayedResult = payload;
     },
+    reset: (state, { payload }) => {
+      state.results = null;
+      state.error = null;
+      state.displayedResult = null;
+      state.meds = [];
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(findPrescription.pending, (state) => {})
+      .addCase(findPrescription.pending, (state) => {
+        state.fetching = true;
+        state.results = null;
+        state.error = false;
+        state.displayedResult = null;
+      })
       .addCase(findPrescription.fulfilled, (state, { payload }) => {
         console.log("search success");
         console.log("payload", payload);
-        state.results = JSON.parse(payload);
+        state.results = payload.results;
+        state.error = false;
       })
-      .addCase(findPrescription.rejected, (state, { payload }) => {});
+      .addCase(findPrescription.rejected, (state, { payload }) => {
+        state.error = true;
+        state.fetching = false;
+      });
   },
 });
 // Export the action creators
@@ -92,6 +87,7 @@ export const {
   incMedCount,
   decMedCount,
   setDisplayedResult,
+  reset,
 } = cartSlice.actions;
 
 // Export the async thunks

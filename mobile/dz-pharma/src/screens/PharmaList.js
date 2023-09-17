@@ -19,7 +19,7 @@ const PharmaList = ({ navigation }) => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = React.useState(true);
-  console.log("__________________________cart______________________", cart);
+  console.log("cart", cart);
   return (
     <View
       style={{
@@ -27,8 +27,7 @@ const PharmaList = ({ navigation }) => {
         backgroundColor: "#FFF",
         padding: 18,
         paddingVertical: 50,
-      }}
-    >
+      }}>
       {/**back and count */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <MaterialCommunityIcons
@@ -45,8 +44,7 @@ const PharmaList = ({ navigation }) => {
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 10,
-          }}
-        >
+          }}>
           <Text style={{ color: "#FFF", fontSize: 23 }}>
             {isVisible ? `1` : "0"}
           </Text>
@@ -58,8 +56,7 @@ const PharmaList = ({ navigation }) => {
           color: "#4fb69a",
           fontSize: 20,
           marginTop: 20,
-        }}
-      >{`Resultats`}</Text>
+        }}>{`Resultats`}</Text>
       <View
         style={{
           width: width - 10,
@@ -69,12 +66,12 @@ const PharmaList = ({ navigation }) => {
         }}
       />
 
-      {cart.results.map((result, index) => (
+      {cart?.results?.map((result, index) => (
         <>
           <Animated.View
+            key={`index`}
             entering={FadeInRight.delay(0).duration(0)}
-            exiting={FadeOutRight.delay(500).duration(500)}
-          >
+            exiting={FadeOutRight.delay(500).duration(500)}>
             <View style={{ flexDirection: "row", paddingVertical: 20 }}>
               {/**pharmacie icon */}
               <View
@@ -82,8 +79,7 @@ const PharmaList = ({ navigation }) => {
                   alignSelf: "center",
                   flex: 0.15,
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <FontAwesome5 name="clinic-medical" size={30} color="#4fb69a" />
               </View>
 
@@ -93,33 +89,18 @@ const PharmaList = ({ navigation }) => {
                   style={{
                     color: "#818181",
                     fontSize: 18,
-                  }}
-                >{`score: ${result.score}`}</Text>
+                  }}>{`score: ${result.score}`}</Text>
+
                 <Text
                   style={{
                     color: "#818181",
                     fontSize: 18,
-                  }}
-                >{`remoborse: ${result.remboursement} DZD`}</Text>
+                  }}>{`distance: ${result.distance} km`}</Text>
                 <Text
                   style={{
                     color: "#818181",
                     fontSize: 18,
-                  }}
-                >{`distance: ${result.distence} km`}</Text>
-                <Text
-                  style={{
-                    color: "#818181",
-                    fontSize: 18,
-                  }}
-                >{`pharmacies: ${result.pharmacies.length}`}</Text>
-                {/* <Text
-                  style={{
-                    color: "#4fb69a",
-                    fontSize: 14,
-                    marginTop: 10,
-                  }}
-                >{`Ouvert`}</Text> */}
+                  }}>{`pharmacies: ${result.pharmacies.length}`}</Text>
               </View>
 
               {/**map icon */}
@@ -128,8 +109,7 @@ const PharmaList = ({ navigation }) => {
                   flex: 0.1,
                   justifyContent: "space-around",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 <View
                   style={{
                     width: 30,
@@ -138,14 +118,7 @@ const PharmaList = ({ navigation }) => {
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: 10,
-                  }}
-                >
-                  {/* <Feather
-                    name="map-pin"
-                    size={28}
-                    color="#4fb69a"
-                    onPress={() => navigation.navigate("Map")}
-                  /> */}
+                  }}>
                   <MaterialCommunityIcons
                     name="map-marker-radius"
                     size={35}
@@ -169,7 +142,7 @@ const PharmaList = ({ navigation }) => {
           </Animated.View>
         </>
       ))}
-
+      {/* 
       <TouchableOpacity
         style={{
           padding: 12,
@@ -179,10 +152,9 @@ const PharmaList = ({ navigation }) => {
           bottom: 5,
           left: width / 2 - 40,
         }}
-        onPress={() => setIsVisible((prev) => !prev)}
-      >
+        onPress={() => setIsVisible((prev) => !prev)}>
         <Text style={{ color: "#e74c3c", fontSize: 14 }}>{`clear all`}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

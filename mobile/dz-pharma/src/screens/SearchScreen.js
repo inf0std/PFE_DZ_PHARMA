@@ -83,7 +83,9 @@ const SearchScreen = ({ navigation }) => {
     }
     console.log("search", search);
   };
-
+  useEffect(() => {
+    cart.results && dispatch(reset());
+  }, []);
   return (
     <View style={styles.container}>
       <View
@@ -97,8 +99,7 @@ const SearchScreen = ({ navigation }) => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-        }}
-      >
+        }}>
         <TextInput
           value={searchText}
           onChangeText={(e) => {
@@ -123,8 +124,7 @@ const SearchScreen = ({ navigation }) => {
             alignItems: "center",
             justifyContent: "space-between",
             padding: 20,
-          }}
-        >
+          }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text
               style={{
@@ -132,8 +132,7 @@ const SearchScreen = ({ navigation }) => {
                 marginLeft: 10,
                 color: "#151516",
                 marginBottom: -3,
-              }}
-            ></Text>
+              }}></Text>
           </View>
 
           <TouchableOpacity
@@ -147,14 +146,12 @@ const SearchScreen = ({ navigation }) => {
               backgroundColor: "#4fb69a",
               justifyContent: "center",
               alignItems: "center",
-            }}
-          >
+            }}>
             <Text
               style={{
                 fontSize: 12,
                 color: "#FFF",
-              }}
-            >
+              }}>
               {cart.meds.length}
             </Text>
           </TouchableOpacity>
@@ -178,8 +175,7 @@ const SearchScreen = ({ navigation }) => {
                 width: "98%",
                 margin: 2,
                 padding: 10,
-              }}
-            >
+              }}>
               <TouchableOpacity onPress={addToPrescreption(item)}>
                 <Text
                   style={{
@@ -188,8 +184,7 @@ const SearchScreen = ({ navigation }) => {
                     alignSelf: "center",
                     flexDirection: "row",
                     alignItems: "center",
-                  }}
-                >
+                  }}>
                   {`${item.MARQUE}\n${item.FORME}:${item.DOSAGE}`}
                 </Text>
               </TouchableOpacity>

@@ -28,7 +28,8 @@ import DraggableMedElement from "../components/draggableMedElem";
 const CartScreen = ({ navigation }) => {
   const { width, height } = Dimensions.get("window");
   const [userLocation, setUserLocation] = useState(null);
-  const cart = useSelector((state) => state.cart);
+  const [locationPermission, setLocationPermission] = useState(null);
+  const { results, fetching, error, meds } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   const incrementCount = (index) => () => {
@@ -42,24 +43,25 @@ const CartScreen = ({ navigation }) => {
   const handleConfirm = () => {
     dispatch(
       findPrescription({
-        meds: cart.meds,
+        ids: meds.map((med) => med.med.ID),
         position: userLocation,
       })
-    )
-      .then(() => navigation.navigate("PhamaList"))
-      .catch(console.log);
+    );
   };
 
   useEffect(() => {
     // Request location permissions and get user's location
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log("status", status);
       if (status !== "granted") {
+        console.log(status);
         setLocationPermission(status);
         return;
       }
 
       let location = await Location.getCurrentPositionAsync({});
+      console.log("location", location);
       setUserLocation({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -67,6 +69,9 @@ const CartScreen = ({ navigation }) => {
       //setLocationPermission(status);
     })();
   }, []);
+  useEffect(() => {
+    results && navigation.navigate("PhamaList");
+  }, [results]);
   return (
     <View style={{ flex: 1, backgroundColor: "#f5f4f9", paddingVertical: 40 }}>
       <View
@@ -75,8 +80,7 @@ const CartScreen = ({ navigation }) => {
           alignItems: "center",
           padding: 15,
           backgroundColor: "#FFF",
-        }}
-      >
+        }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Feather name="chevron-left" size={20} color="#b8b8b8" />
@@ -86,8 +90,7 @@ const CartScreen = ({ navigation }) => {
               fontSize: 18,
               marginTop: 3,
               marginLeft: 5,
-            }}
-          >
+            }}>
             Mon ordonnance
           </Text>
         </View>
@@ -102,8 +105,9 @@ const CartScreen = ({ navigation }) => {
       />
       <View style={{ padding: 12, flex: 1, backgroundColor: "#ffffff" }}>
         <ScrollView>
-          {cart.meds.map((cartItem, index) => (
+          {meds.map((cartItem, index) => (
             <DraggableMedElement
+              key={index}
               med={cartItem}
               index={index}
               decrementCount={decMedCount}
@@ -267,15 +271,13 @@ const CartScreen = ({ navigation }) => {
               width: 250,
               alignSelf: "center",
             }}
-            onPress={handleConfirm}
-          >
+            onPress={handleConfirm}>
             <Text
               style={{
                 fontSize: 20,
 
                 color: "#FFF",
-              }}
-            >
+              }}>
               confirmer
             </Text>
           </TouchableOpacity>

@@ -18,35 +18,21 @@ import {
   Fontisto,
 } from "@expo/vector-icons";
 
-import { Feather } from "@expo/vector-icons";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import { useSelector } from "react-redux";
 import { Linking } from "react-native";
+import axios from "axios";
+import { API_URL } from "../../config";
+import { HOST } from "../constants";
 
-const MapScreen = () => {
-  const [userLocation, setUserLocation] = useState(null);
+const LocalMapScreen = () => {
+  const [userLocation, setUserLocation] = useState({
+    latitude: 36.69707839807785,
+    longitude: 4.056080912925099,
+  });
   const [locationPermission, setLocationPermission] = useState(null);
-  const cart = useSelector((state) => state.cart);
-  console.log("___________________cart_____________________", cart);
-  const openItenerary = () => {
-    const waypoints = [
-      userLocation,
-      ...cart.results[cart.displayedResult].pharmacies,
-    ]
-      .map((pharma) => `${pharma.latitude},${pharma.longitude}`)
-      .join("|");
-
-    const origin = userLocation; //cart.results[cart.displayedResult].pharmacies[0];
-    const destination =
-      cart.results[cart.displayedResult].pharmacies[
-        cart.results[cart.displayedResult].pharmacies.length - 1
-      ];
-
-    const url = `https://www.google.com/maps/dir/?api=1&origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&waypoints=${waypoints}`;
-
-    Linking.openURL(url);
-  };
+  const [pharmacies, setPharmacies] = useState([]);
 
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -64,56 +50,63 @@ const MapScreen = () => {
   };
   useEffect(() => {
     // Request location permissions and get user's location
-    getLocation();
   }, []);
   useEffect(() => {
     console.log("location permission", locationPermission);
     locationPermission !== "granted" && getLocation();
   }, [locationPermission]);
 
-  const [pharmacies, setPharmacies] = useState([]);
-  /* 
   useEffect(() => {
     // Fetch the list of pharmacies using Axios
+    console.log("\n\n\n\n\n\nbegin\n\n\n\n\n\n");
+    getLocation();
+
+    console.log(
+      "gttin pharma",
+      `${HOST}/api/v1/pharmacies/list?latitude=${userLocation.latitude}&longitude=${userLocation.longitude}`
+    );
     axios
-      .get(`${API_URL}/list`)
+      .get(
+        `${HOST}/api/v1/pharmacies/list?latitude=${userLocation.latitude}&longitude=${userLocation.longitude}`
+      )
       .then((response) => {
         // Convert latitude and longitude strings to numbers
+        console.log(response.data);
         const pharmaciesWithNumbers = response.data.map((pharmacy) => ({
           ...pharmacy,
           latitude: parseFloat(pharmacy.latitude),
           longitude: parseFloat(pharmacy.longitude),
         }));
         setPharmacies(pharmaciesWithNumbers);
+        console.log(pharmaciesWithNumbers + "0000000000000hdhdh");
       })
       .catch((error) => {
-        console.error("Error fetching pharmacies:", error);
+        console.error("\n\nError fetching pharmacies:", error, "\n\n");
       });
-  }, []); */
+  }, []);
+  useEffect(() => {
+    pharmacies.length == 0 &&
+      axios
+        .get(
+          `${API_URL}/api/v1/pharmacies/list?latitude=${userLocation.latitude}&longitude=${userLocation.longitude}`
+        )
+        .then((response) => {
+          // Convert latitude and longitude strings to numbers
+          console.log(response.data);
+          const pharmaciesWithNumbers = response.data.map((pharmacy) => ({
+            ...pharmacy,
+            latitude: parseFloat(pharmacy.latitude),
+            longitude: parseFloat(pharmacy.longitude),
+          }));
+          setPharmacies(pharmaciesWithNumbers);
+        })
+        .catch((error) => {
+          console.error("\n\nError fetching pharmacies:", error, "\n\n");
+        });
+  }, [pharmacies]);
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 15,
-          backgroundColor: "#FFF",
-        }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Feather name="chevron-left" size={20} color="#b8b8b8" />
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontSize: 18,
-              marginTop: 3,
-              marginLeft: 5,
-            }}>
-            carte
-          </Text>
-        </View>
-      </View>
       {locationPermission === "granted" ? (
         userLocation ? (
           <MapView
@@ -129,21 +122,19 @@ const MapScreen = () => {
               title="votre position"
               description="votre position"
             />
-            {cart.results[cart.displayedResult].pharmacies?.map(
-              (pharmacy, index) => (
-                <Marker
-                  {...console.log(pharmacy)}
-                  key={index}
-                  coordinate={{
-                    latitude: Number.parseFloat(pharmacy.latitude),
-                    longitude: Number.parseFloat(pharmacy.longitude),
-                  }}
-                  title="pharmacie" //{pharmacy.name}
-                  description="test" //{pharmacy.phone}
-                  pinColor="#002200"
-                />
-              )
-            )}
+            {pharmacies?.map((pharmacy, index) => (
+              <Marker
+                {...console.log(pharmacy)}
+                key={index}
+                coordinate={{
+                  latitude: pharmacy.latitude,
+                  longitude: pharmacy.longitude,
+                }}
+                title={pharmacy.nom} //{pharmacy.name}
+                description="test" //{pharmacy.phone}
+                pinColor="#002200"
+              />
+            ))}
             {/* <Marker
               coordinate={{
                 latitude: 36.712691747354654,
@@ -163,15 +154,15 @@ const MapScreen = () => {
           device settings.
         </Text>
       )}
-      <View style={{ position: "absolute", bottom: 19, right: 52 }}>
-        {/* <Button title="Open Itinerary" onPress={openDirections} /> */}
+      {/* <View style={{ position: "absolute", bottom: 19, right: 52 }}>
+        {/* <Button title="Open Itinerary" onPress={openDirections} /> }
         <MaterialIcons
           name="directions"
           size={35}
           onPress={openItenerary}
           color={"red"}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -187,7 +178,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MapScreen;
+export default LocalMapScreen;
 {
   /* <MaterialIcons name="local-pharmacy" size={40} color="red" /> */
 }
