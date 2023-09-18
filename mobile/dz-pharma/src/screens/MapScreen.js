@@ -25,7 +25,10 @@ import { useSelector } from "react-redux";
 import { Linking } from "react-native";
 
 const MapScreen = () => {
-  const [userLocation, setUserLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState({
+    latitude: 36.69707839807785,
+    longitude: 4.056080912925099,
+  });
   const [locationPermission, setLocationPermission] = useState(null);
   const cart = useSelector((state) => state.cart);
   console.log("___________________cart_____________________", cart);
@@ -93,27 +96,6 @@ const MapScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 15,
-          backgroundColor: "#FFF",
-        }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Feather name="chevron-left" size={20} color="#b8b8b8" />
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontSize: 18,
-              marginTop: 3,
-              marginLeft: 5,
-            }}>
-            carte
-          </Text>
-        </View>
-      </View>
       {locationPermission === "granted" ? (
         userLocation ? (
           <MapView

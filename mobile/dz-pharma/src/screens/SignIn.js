@@ -36,7 +36,7 @@ const SignIn = ({ navigation }) => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API_URL}/SignIn`, {
+      const response = await axios.post(`${API_URL}/auth/v1/signin`, {
         email,
         password,
       });
@@ -83,23 +83,20 @@ const SignIn = ({ navigation }) => {
               color: "#323646",
               alignSelf: "center",
               marginTop: 20,
-            }}
-          >
+            }}>
             Bienvenue à Pharma DZ
           </Text>
         </Animated.View>
 
         <Animated.View
           entering={FadeInDown.delay(600).duration(300)}
-          style={{ flex: 1 }}
-        >
+          style={{ flex: 1 }}>
           <Text
             style={{
               fontSize: 16,
               color: "#323646",
               marginTop: 20,
-            }}
-          >
+            }}>
             Email
           </Text>
           <View
@@ -108,8 +105,7 @@ const SignIn = ({ navigation }) => {
               height: 50,
               borderRadius: 10,
               paddingHorizontal: 10,
-            }}
-          >
+            }}>
             <Controller
               control={control}
               name="email"
@@ -134,8 +130,7 @@ const SignIn = ({ navigation }) => {
                   color: "red",
                   padding: 10,
                   textAlign: "center",
-                }}
-              >
+                }}>
                 {errors.email.message}
               </Text>
             )}
@@ -146,8 +141,7 @@ const SignIn = ({ navigation }) => {
               fontSize: 16,
               color: "#323646",
               marginTop: 20,
-            }}
-          >
+            }}>
             Mot de passe
           </Text>
           <View
@@ -159,8 +153,7 @@ const SignIn = ({ navigation }) => {
               alignItems: "center",
               justifyContent: "space-between",
               paddingHorizontal: 10,
-            }}
-          >
+            }}>
             <Controller
               control={control}
               name="password"
@@ -186,8 +179,7 @@ const SignIn = ({ navigation }) => {
                   color: "red",
                   padding: 10,
                   textAlign: "center",
-                }}
-              >
+                }}>
                 {errors.email.message}
               </Text>
             )}
@@ -202,14 +194,12 @@ const SignIn = ({ navigation }) => {
               height: 50,
               marginTop: 20,
             }}
-            onPress={handleSubmit(handleSignIn)}
-          >
+            onPress={handleSubmit(handleSignIn)}>
             <Text
               style={{
                 fontSize: 16,
                 color: "#FFF",
-              }}
-            >
+              }}>
               Login
             </Text>
           </TouchableOpacity>
@@ -220,8 +210,7 @@ const SignIn = ({ navigation }) => {
                 color: "red",
                 padding: 10,
                 textAlign: "center",
-              }}
-            >
+              }}>
               {error}
             </Text>
           )}
@@ -231,8 +220,7 @@ const SignIn = ({ navigation }) => {
               color: "#50e3c2",
               padding: 10,
               textAlign: "center",
-            }}
-          >
+            }}>
             Mot de passe oublier?
           </Text>
 
@@ -243,22 +231,19 @@ const SignIn = ({ navigation }) => {
               alignSelf: "center",
               alignItems: "flex-end",
             }}
-            onPress={() => navigation.navigate("SignUp")}
-          >
+            onPress={() => navigation.navigate("SignUp")}>
             <Text
               style={{
                 fontSize: 14,
                 color: "#323646",
-              }}
-            >
+              }}>
               vou n'avez pas de compte?{" "}
             </Text>
             <Text
               style={{
                 fontSize: 14,
                 color: "#50e3c2",
-              }}
-            >
+              }}>
               s'inscrire!
             </Text>
           </TouchableOpacity>

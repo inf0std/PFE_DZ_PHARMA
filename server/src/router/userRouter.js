@@ -7,7 +7,7 @@ const knex = require("knex")({
     user: "root",
     password: "",
     database: "Pharma_dz",
-    //port: 3307,
+    port: 3307,
   },
 });
 

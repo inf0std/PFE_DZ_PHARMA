@@ -3,8 +3,8 @@ import { useFetchPharmaciesQuery } from "../../service/api/pharmacyApi";
 import DataTable from "../../componant/table";
 import { useEffect, useState } from "react";
 import { ArrowClockwise } from "react-bootstrap-icons";
-import { Col, Row } from "react-bootstrap";
-import { RotatingLines } from "react-loader-spinner";
+import { Col, Pagination, Row } from "react-bootstrap";
+//import { RotatingLines } from "react-loader-spinner";
 
 const PharmaciesPage = ({ notify }) => {
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
@@ -18,9 +18,9 @@ const PharmaciesPage = ({ notify }) => {
   const parsePharmacies = (data) => {
     return data
       ? data?.map((pharma) => ({
-          id: pharma.pharmcie_id,
+          id: pharma.pharmacie_id,
           Nom: pharma.name,
-          Proprietaire: pharma.username,
+          // Proprietaire: pharma.username,
           Latitude: pharma.latitude,
           Longitude: pharma.longitude,
           Telephone: pharma.phone,
@@ -50,7 +50,7 @@ const PharmaciesPage = ({ notify }) => {
           </div>
         </Row>
       )}
-      {isLoading && (
+      {/*  {isLoading && (
         <Row className="align-items-center" style={{ height: "80vh" }}>
           <Col />
           <Col md="auto">
@@ -58,15 +58,36 @@ const PharmaciesPage = ({ notify }) => {
           </Col>
           <Col />
         </Row>
-      )}
-
+      )} */}
+      {console.log(parsePharmacies(pharmacies))}
       {pharmacies && (
-        <DataTable
-          data={parsePharmacies(pharmacies)}
-          detailsF={(id) => {
-            console.log(id);
-          }}
-        />
+        <>
+          <Row className="mt-2">
+            <DataTable
+              data={parsePharmacies(pharmacies)}
+              detailsF={(id) => {
+                console.log(id);
+              }}
+              rowSpanFn={() => 1}
+              clickFn={console.log}
+            />
+          </Row>
+
+          <Row>
+            <Col />
+            <Col md="auto">
+              <Pagination className="shadow">
+                <Pagination.First />
+                <Pagination.Item>1</Pagination.Item>
+                <Pagination.Item>2</Pagination.Item>
+                <Pagination.Item>3</Pagination.Item>
+                <Pagination.Ellipsis />
+                <Pagination.Last />
+              </Pagination>
+            </Col>
+            <Col />
+          </Row>
+        </>
       )}
 
       {pharmacies?.length == 0 && <p>pas de données a afficher</p>}

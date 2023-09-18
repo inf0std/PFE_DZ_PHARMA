@@ -23,6 +23,7 @@ const StackNavigator = () => {
         component={SignIn}
         options={{ headerShown: false }}
       />
+
       <Stack.Screen
         name="SignUp"
         component={SignUp}
@@ -49,7 +50,7 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Map"
         component={MapScreen}
-        options={{ headerShown: false }}
+        //options={{ headerShown: false }}
       />
 
       {/* Add more screens as needed */}

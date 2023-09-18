@@ -1,1 +1,2 @@
-export const HOST = "http://192.168.219.192:8000";
+import { API_URL } from "../../config";
+export const HOST = API_URL;

@@ -29,34 +29,21 @@ const PharmaList = ({ navigation }) => {
         paddingVertical: 50,
       }}>
       {/**back and count */}
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <MaterialCommunityIcons
           name="arrow-left"
           size={24}
           color="black"
           onPress={() => navigation.goBack()}
         />
-        <View
+        <Text
           style={{
-            width: 34,
-            height: 34,
-            backgroundColor: "#4fb69a",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 10,
-          }}>
-          <Text style={{ color: "#FFF", fontSize: 23 }}>
-            {isVisible ? `1` : "0"}
-          </Text>
-        </View>
+            color: "#4fb69a",
+            fontSize: 20,
+          }}>{`Resultats`}</Text>
       </View>
       {/**result */}
-      <Text
-        style={{
-          color: "#4fb69a",
-          fontSize: 20,
-          marginTop: 20,
-        }}>{`Resultats`}</Text>
+
       <View
         style={{
           width: width - 10,
@@ -100,7 +87,14 @@ const PharmaList = ({ navigation }) => {
                   style={{
                     color: "#818181",
                     fontSize: 18,
-                  }}>{`pharmacies: ${result.pharmacies.length}`}</Text>
+                  }}>{`pharmacies(${result.pharmacies.length}):`}</Text>
+                {result.pharmacies.map((pharmacy, i) => (
+                  <Text
+                    style={{
+                      color: "#818181",
+                      fontSize: 18,
+                    }}>{`${i + 1}- ${pharmacy.nom}`}</Text>
+                ))}
               </View>
 
               {/**map icon */}
@@ -142,19 +136,18 @@ const PharmaList = ({ navigation }) => {
           </Animated.View>
         </>
       ))}
-      {/* 
-      <TouchableOpacity
-        style={{
-          padding: 12,
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
-          bottom: 5,
-          left: width / 2 - 40,
-        }}
-        onPress={() => setIsVisible((prev) => !prev)}>
-        <Text style={{ color: "#e74c3c", fontSize: 14 }}>{`clear all`}</Text>
-      </TouchableOpacity> */}
+      {cart.results.length == 0 && (
+        <View
+          style={{
+            alignSelf: "center",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            marginTop: "80%",
+          }}>
+          <Text style={{ color: "#F00", fontSize: 26 }}>Aucun resultat</Text>
+        </View>
+      )}
     </View>
   );
 };

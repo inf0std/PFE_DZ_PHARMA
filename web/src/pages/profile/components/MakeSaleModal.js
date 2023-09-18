@@ -13,20 +13,27 @@ import {
 } from "react-bootstrap";
 
 import { CapsulePill, PlusCircle, PlusCircleFill } from "react-bootstrap-icons";
-
+import {
+  useAddSaleMutation,
+  useFetchMedicinesQuery,
+} from "../../../service/api/medicineApi";
+/* 
 const meds = [
-  { ID: 1, NOM_DE_MARQUE: "PARA" },
+  { ID: 1, NOM_DE_MARQUE: "PARACITAMOL" },
   { ID: 2, NOM_DE_MARQUE: "PARA" },
   { ID: 3, NOM_DE_MARQUE: "PARA" },
   { ID: 4, NOM_DE_MARQUE: "PARA" },
   { ID: 5, NOM_DE_MARQUE: "PARA" },
-];
+]; */
 const MakeSaleModal = ({ close, notify }) => {
   const [medId, setMedId] = useState(null);
   const [quantity, setQuantity] = useState(0);
   const [barCode, setBarCode] = useState("");
   const [choose, setChoose] = useState(false);
-  const [meds, setMeds] = useState([{}]);
+  const [meds, setMeds] = useState([]);
+  const { data: medList, isLoading, error } = useFetchMedicinesQuery();
+  const [addSale, { isLoading: fetching, isSuccess, isError, data }] =
+    useAddSaleMutation();
 
   const handleClose = () => {
     close && close();
@@ -93,8 +100,7 @@ const MakeSaleModal = ({ close, notify }) => {
                 </InputGroup.Text>
                 <Form.Select
                   value={medId}
-                  onChange={(e) => setMedId((medId) => e.target.value)}
-                >
+                  onChange={(e) => setMedId((medId) => e.target.value)}>
                   {meds.map((med, index) => (
                     <option key={index} value={med.ID}>
                       {med.NOM_DE_MARQUE}
@@ -125,78 +131,68 @@ const MakeSaleModal = ({ close, notify }) => {
             </Stack>
             <Row
               className="mt-1 mb-2"
-              style={{ width: "100%", margin: "auto" }}
-            >
+              style={{ width: "100%", margin: "auto" }}>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px", borderTopLeftRadius: "5px" }}
-                onClick={handleDigitClick(1)}
-              >
+                onClick={handleDigitClick(1)}>
                 1
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(2)}
-              >
+                onClick={handleDigitClick(2)}>
                 2
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px", borderTopRightRadius: "5px" }}
-                onClick={handleDigitClick(3)}
-              >
+                onClick={handleDigitClick(3)}>
                 3
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(4)}
-              >
+                onClick={handleDigitClick(4)}>
                 4
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(5)}
-              >
+                onClick={handleDigitClick(5)}>
                 5
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(6)}
-              >
+                onClick={handleDigitClick(6)}>
                 6
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(7)}
-              >
+                onClick={handleDigitClick(7)}>
                 7
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(8)}
-              >
+                onClick={handleDigitClick(8)}>
                 8
               </Button>
               <Button
                 className="col-md-4"
                 variant="outline-secondary"
                 style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(9)}
-              >
+                onClick={handleDigitClick(9)}>
                 9
               </Button>
               <Button
@@ -204,8 +200,7 @@ const MakeSaleModal = ({ close, notify }) => {
                 variant="secondary"
                 onClick={handleResetQuantity}
                 style={{ borderRadius: "0px", borderBottomLeftRadius: "5px" }}
-                disabled={!(quantity > 0)}
-              >
+                disabled={!(quantity > 0)}>
                 C
               </Button>
               <Button
@@ -214,8 +209,7 @@ const MakeSaleModal = ({ close, notify }) => {
                 style={{
                   borderRadius: "0px",
                 }}
-                onClick={handleDigitClick(0)}
-              >
+                onClick={handleDigitClick(0)}>
                 0
               </Button>
               <Button
@@ -223,8 +217,7 @@ const MakeSaleModal = ({ close, notify }) => {
                 variant="secondary"
                 style={{ borderRadius: "0px", borderBottomRightRadius: "5px" }}
                 onClick={handleRevertQuantity}
-                disabled={!(quantity > 0)}
-              >
+                disabled={!(quantity > 0)}>
                 {"<<"}
               </Button>
             </Row>
@@ -239,9 +232,11 @@ const MakeSaleModal = ({ close, notify }) => {
               {meds?.map((med, index) => (
                 <ListGroupItem className="shadow my-1" key={index}>
                   <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <span>{med?.med?.NOM_DE_MARQUE ?? "fghjkl"}</span>
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}>
+                    <span>{med?.med?.NOM_DE_MARQUE ?? "PARACITAMOL"}</span>
                     <span>{med?.quantity ?? 1}</span>
                   </div>
                 </ListGroupItem>

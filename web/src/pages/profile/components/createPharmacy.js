@@ -37,6 +37,8 @@ import {
   GeoAltFill,
   GeoFill,
 } from "react-bootstrap-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { setPharmacie } from "../../../service/auth";
 
 // Generate custom icon image URL
 //const customIconUrl = `data:image/svg+xml;base64,${btoa(GeoAltFill.toSvg())}`;
@@ -46,6 +48,8 @@ const customIcon = L.divIcon({
 });
 
 const CreatePharmacyModal = ({ notify, close }) => {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.persistedReducer.auth);
   //36.69608953148957, 4.055817026822473
   const [position, setPosition] = useState({
     longitude: 36.69608953148957,
@@ -61,7 +65,7 @@ const CreatePharmacyModal = ({ notify, close }) => {
     formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
-      userId: "1",
+      userId: auth.value.id,
       name: "",
       longitude: "",
       latitude: "",
@@ -71,15 +75,16 @@ const CreatePharmacyModal = ({ notify, close }) => {
     reValidateMode: "onChange",
   });
 
-  console.log(getValues());
+  const [createPharmacy, { isLoading, isError, isSuccess, data }] =
+    useCreatePharmacyMutation();
   const handleClose = () => {
     close();
   };
 
   //
-
+  //console.log("response", response);
   const handleCreate = (values) => {
-    console.log(values);
+    createPharmacy(values);
   };
   useEffect(() => {
     // Check if geolocation is available in the browser
@@ -104,6 +109,18 @@ const CreatePharmacyModal = ({ notify, close }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (isSuccess) {
+      notify({ type: "success", message: "pharmacie creer avec success" });
+      dispatch(setPharmacie({ ...data }));
+      close();
+    }
+  }, [isSuccess]);
+  useEffect(() => {
+    isError &&
+      notify({ type: "error", message: "echec de creation de pharmacie" });
+  }, [isError]);
+
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
@@ -126,12 +143,7 @@ const CreatePharmacyModal = ({ notify, close }) => {
         <Row>
           <Col md={5}>
             <Form noValidate hidden={showMap}>
-              <Form.Control
-                type="text"
-                {...register("userId")}
-                hidden
-                disabled
-              />
+              <Form.Control type="text" {...register("userId")} hidden />
               <Stack gap={2}>
                 <FloatingLabel controlId="1" label="Nom">
                   <Form.Control
@@ -152,24 +164,6 @@ const CreatePharmacyModal = ({ notify, close }) => {
                         </InputGroup.Text>
                         <Form.Control
                           type="number"
-                          placeholder="longitude"
-                          {...register("longitude", { ...longitudeRule })}
-                        />
-                      </InputGroup>
-                      {errors?.longitude && (
-                        <span className="text-danger">
-                          {errors?.longitude?.message}
-                        </span>
-                      )}
-                    </Form.Group>
-
-                    <Form.Group>
-                      <InputGroup>
-                        <InputGroup.Text>
-                          <GeoAltFill size={20} />
-                        </InputGroup.Text>
-                        <Form.Control
-                          type="number"
                           placeholder="latitude"
                           {...register("latitude", { ...latitudeRule })}
                         />
@@ -181,13 +175,30 @@ const CreatePharmacyModal = ({ notify, close }) => {
                       )}
                     </Form.Group>
 
+                    <Form.Group>
+                      <InputGroup>
+                        <InputGroup.Text>
+                          <GeoAltFill size={20} />
+                        </InputGroup.Text>
+                        <Form.Control
+                          type="number"
+                          placeholder="longitude"
+                          {...register("longitude", { ...longitudeRule })}
+                        />
+                      </InputGroup>
+                      {errors?.longitude && (
+                        <span className="text-danger">
+                          {errors?.longitude?.message}
+                        </span>
+                      )}
+                    </Form.Group>
+
                     <span className="text-center text-success">
                       <a
                         onClick={() => {
                           console.log("map");
                           setSHowMap(true);
-                        }}
-                      >
+                        }}>
                         <GeoAltFill size={20} />+
                       </a>
                     </span>
@@ -212,8 +223,7 @@ const CreatePharmacyModal = ({ notify, close }) => {
           <Col md={7}>
             <div
               className="w-100 justify-content-center"
-              style={{ width: "100%" }}
-            >
+              style={{ width: "100%" }}>
               {/*  <Row>
                 <Col md="auto">
                   <span className="me-2 text-success">
@@ -258,14 +268,12 @@ const CreatePharmacyModal = ({ notify, close }) => {
               <MapContainer
                 center={[position.latitude, position.longitude]}
                 zoom={17}
-                style={{ width: "100%", height: "50vh" }}
-              >
+                style={{ width: "100%", height: "50vh" }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <MapClickHandler />
                 <Marker
                   icon={customIcon}
-                  position={[position.latitude, position.longitude]}
-                >
+                  position={[position.latitude, position.longitude]}>
                   <Popup>
                     <GeoAltFill />
                   </Popup>
@@ -288,8 +296,7 @@ const CreatePharmacyModal = ({ notify, close }) => {
           <Button
             variant="outline-success"
             onClick={handleSubmit(handleCreate)}
-            disabled={!isDirty}
-          >
+            disabled={!isDirty}>
             Creer
           </Button>
         </Stack>

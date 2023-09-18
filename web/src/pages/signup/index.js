@@ -35,7 +35,7 @@ const SignupPage = ({ notify }) => {
       .then((result) => {
         console.log(result);
         notify({ type: "success", message: "inscription réussie" });
-        navigate("/dashboard");
+        navigate("/");
       })
       .catch((e) => {
         console.log(e);
@@ -53,54 +53,28 @@ const SignupPage = ({ notify }) => {
         <ToastContainer position="top-end"></ToastContainer>
         <Row
           className="align-items-center justify-content-center"
-          style={{ height: "100vh" }}
-        >
+          style={{ height: "100vh" }}>
           <Col md={5}>
             <Card className="border-0 shadow">
               <Card.Header className="bg-success text-light">
                 <Card.Title className="text-center">Inscription</Card.Title>
               </Card.Header>
               <Card.Body>
-                <Form noValidate>
+                <Form noValidate className="p-4">
                   <Stack gap={2}>
                     {" "}
                     <Form.Group>
                       <InputGroup>
-                        <InputGroup.Text>prenom & nom</InputGroup.Text>
+                        <InputGroup.Text>Nom d'utilisateur</InputGroup.Text>
                         <Form.Control
                           type="text"
-                          placeholder="Prenom"
-                          {...register("firstname", {
+                          placeholder="nom d'utilisateur"
+                          {...register("username", {
                             required: {
                               value: true,
-                              message: "prenom est obligatoire*",
+                              message: "obligatoire*",
                             },
-                            pattern: {
-                              value: /^[a-zA-ZÀ-ÿ\s0-9]+$/,
-                              message: "doit etre en français",
-                            },
-                            minLength: {
-                              value: 3,
-                              message: "minimum 3 lettres",
-                            },
-                            maxLength: {
-                              value: 30,
-                              message: "maximum 30 lettres",
-                            },
-                          })}
-                        />
-                        <Form.Control
-                          type="text"
-                          placeholder="Nom"
-                          {...register("lastname", {
-                            required: {
-                              value: true,
-                              message: "nom est obligatoire*",
-                            },
-                            pattern: {
-                              value: /^[a-zA-ZÀ-ÿ\s0-9]+$/,
-                              message: "doit etre en français",
-                            },
+
                             minLength: {
                               value: 3,
                               message: "minimum 3 lettres",
@@ -114,29 +88,7 @@ const SignupPage = ({ notify }) => {
                       </InputGroup>
 
                       <span className="text-danger">
-                        {errors?.firstname?.message}
-                        {errors?.lastname?.message}
-                      </span>
-                    </Form.Group>
-                    <Form.Group>
-                      <InputGroup>
-                        <InputGroup.Text>
-                          <Calendar />
-                        </InputGroup.Text>
-                        <Form.Control
-                          type="date"
-                          {...register("birth_date", {
-                            require: { value: true, message: "obligatoire*" },
-                            validate: (value) => {
-                              return new Date(value) > new Date()
-                                ? "valeur dans le future*"
-                                : true;
-                            },
-                          })}
-                        />
-                      </InputGroup>
-                      <span className="text-danger">
-                        {errors?.birth_date?.message}
+                        {errors?.username?.message}
                       </span>
                     </Form.Group>
                     <Form.Group>
@@ -173,12 +125,12 @@ const SignupPage = ({ notify }) => {
                               value: 8,
                               message: "longeur minale 8*",
                             },
-                            pattern: {
+                            /*  pattern: {
                               value:
                                 /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).+$/,
                               message:
                                 "doit avoire: 1 caracter speciale, 1 majuscule, 1 minuscule et 1 chiffre*",
-                            },
+                            }, */
                           })}
                         />
                       </InputGroup>
@@ -201,12 +153,12 @@ const SignupPage = ({ notify }) => {
                               value: 8,
                               message: "longeur minale 8*",
                             },
-                            pattern: {
+                            /* pattern: {
                               value:
                                 /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).+$/,
                               message:
                                 "doit avoire: 1 caracter speciale, 1 majuscule, 1 minuscule et 1 chiffre*",
-                            },
+                            }, */
                             validate: (value) => {
                               return value === getValues().password
                                 ? true
@@ -229,9 +181,8 @@ const SignupPage = ({ notify }) => {
                         //variant="link"
                         className="text-link"
                         onClick={() => {
-                          navigate("/login");
-                        }}
-                      >
+                          navigate("/");
+                        }}>
                         se connecter.
                       </a>
                     </p>

@@ -20,6 +20,7 @@ import {
   incMedCount,
   decMedCount,
   findPrescription,
+  reset,
 } from "../redux/slices/cart/cartSlice";
 
 import * as Location from "expo-location";
@@ -27,7 +28,10 @@ import { useDispatch, useSelector } from "react-redux";
 import DraggableMedElement from "../components/draggableMedElem";
 const CartScreen = ({ navigation }) => {
   const { width, height } = Dimensions.get("window");
-  const [userLocation, setUserLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState({
+    latitude: 36.69707839807785,
+    longitude: 4.056080912925099,
+  });
   const [locationPermission, setLocationPermission] = useState(null);
   const { results, fetching, error, meds } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -49,10 +53,14 @@ const CartScreen = ({ navigation }) => {
     );
   };
 
+  const handleResetCart = () => {
+    dispatch(reset());
+  };
+
   useEffect(() => {
     // Request location permissions and get user's location
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      let { status } = await Location.requestForegroundPermissonsAsync();
       console.log("status", status);
       if (status !== "granted") {
         console.log(status);
@@ -72,6 +80,10 @@ const CartScreen = ({ navigation }) => {
   useEffect(() => {
     results && navigation.navigate("PhamaList");
   }, [results]);
+
+  useEffect(() => {
+    !meds.length && navigation.goBack();
+  }, [meds]);
   return (
     <View style={{ flex: 1, backgroundColor: "#f5f4f9", paddingVertical: 40 }}>
       <View
@@ -91,7 +103,7 @@ const CartScreen = ({ navigation }) => {
               marginTop: 3,
               marginLeft: 5,
             }}>
-            Mon ordonnance
+            Mes Medicaments
           </Text>
         </View>
       </View>
@@ -110,157 +122,15 @@ const CartScreen = ({ navigation }) => {
               key={index}
               med={cartItem}
               index={index}
-              decrementCount={decMedCount}
+              decrementCount={decrementCount}
               incrementCount={incrementCount}
             />
-            /* <Animated.View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-
-                  paddingVertical: 5,
-                }}
-              >
-               
-                <View style={{ marginLeft: 10, flex: 1 }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: "#2d2d2d",
-                    }}
-                  >{`${cartItem.med.MARQUE}`}</Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: "#66eea6",
-                    }}
-                  >{`${cartItem.med.FORME}`}</Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: "#66eea6",
-                    }}
-                  >{`${cartItem.med.DOSAGE}`}</Text>
-                </View>
-               
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: "#F1F1F1",
-                    justifyContent: "space-between",
-                    borderRadius: 10,
-                  }}
-                >
-                  <TouchableOpacity
-                    disabled={cartItem.count == 1}
-                    onPress={decrementCount(index)}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        color: "#2d2d2d",
-                        paddingLeft: 5,
-                        marginHorizontal: 5,
-                      }}
-                    >{`-`}</Text>
-                  </TouchableOpacity>
-                  <Text
-                    style={{
-                      fontSize: 22,
-                      color: "#2d2d2d",
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                    }}
-                  >
-                    {cartItem.count}
-                  </Text>
-                  <TouchableOpacity onPress={incrementCount(index)}>
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        color: "#2d2d2d",
-                        paddingRight: 5,
-                        marginHorizontal: 5,
-                      }}
-                    >{`+`}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View
-                style={{
-                  width: width - 10,
-                  height: 2,
-                  backgroundColor: "#f1f1f1",
-                  alignSelf: "center",
-                }}
-              />
-            </Animated.View> */
           ))}
         </ScrollView>
-        {/* <Animated.View entering={FadeInDown.delay(400).duration(400)}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <View style={{ marginLeft: 10, flex: 1 }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: "#2d2d2d",
-                }}
-              >{`Paracetamol`}</Text>
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: "#66eea6",
-                }}
-              >{`500 mg`}</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                backgroundColor: "#FFF",
-                justifyContent: "space-between",
-                borderRadius: 10,
-              }}
-            >
-              <TouchableOpacity onPress={decrementCount}>
-                <Text
-                  style={{
-                    fontSize: 30,
-                    color: "#2d2d2d",
-                    paddingLeft: 5,
-                    marginHorizontal: 5,
-                  }}
-                >{`-`}</Text>
-              </TouchableOpacity>
-              <Text
-                style={{
-                  fontSize: 22,
-                  color: "#2d2d2d",
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                }}
-              >
-                {count}
-              </Text>
-              <TouchableOpacity onPress={incrementCount}>
-                <Text
-                  style={{
-                    fontSize: 30,
-                    color: "#2d2d2d",
-                    paddingRight: 5,
-                    marginHorizontal: 5,
-                  }}
-                >{`+`}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Animated.View> */}
 
         <View style={{ flex: 1 }} />
 
-        <Animated.View entering={FadeInDown.delay(1200).duration(400)}>
+        <Animated.View entering={FadeInDown.delay(1000).duration(400)}>
           <TouchableOpacity
             style={{
               backgroundColor: "#4fb69a",
@@ -279,6 +149,29 @@ const CartScreen = ({ navigation }) => {
                 color: "#FFF",
               }}>
               confirmer
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+
+        <Animated.View entering={FadeInDown.delay(1200).duration(400)}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#b64f9a",
+              paddingVertical: 6,
+              borderRadius: 12,
+              justifyContent: "center",
+              alignItems: "center",
+              width: 250,
+              alignSelf: "center",
+            }}
+            onPress={handleResetCart}>
+            <Text
+              style={{
+                fontSize: 20,
+
+                color: "#FFF",
+              }}>
+              Reinitialiser
             </Text>
           </TouchableOpacity>
         </Animated.View>

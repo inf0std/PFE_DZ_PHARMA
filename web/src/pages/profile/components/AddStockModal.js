@@ -12,6 +12,14 @@ import Select from "react-select";
 import { CapsulePill } from "react-bootstrap-icons";
 
 import { BAR_CODE_SIZE } from "../../../constants";
+import {
+  useFetchMedicinesQuery,
+  useAddStockMutation,
+} from "../../../service/api/medicineApi";
+
+import { RotatingLines } from "react-loader-spinner";
+import { useSelector } from "react-redux";
+/* 
 const meds = [
   {
     ID: 1,
@@ -37,14 +45,18 @@ const meds = [
     NOM_DE_MARQUE: "augmentin",
     BAR_CODE: "23456784", //
   },
-];
+]; */
 
-const AddStockModal = ({ close, notify }) => {
+const AddStockModal = ({ close, notify, refetch }) => {
+  const auth = useSelector((state) => state.persistedReducer.auth);
+  const { data: meds, isLoading, error } = useFetchMedicinesQuery();
   const [barCode, setBarCode] = useState({ value: "" });
   const [quantity, setQuantity] = useState(0);
   const [medId, setMedId] = useState(null);
   const [choose, setChoose] = useState(false);
-
+  const [eDate, setEDate] = useState("");
+  const [addStock, { isLoading: stockLoading, isError, isSuccess, data }] =
+    useAddStockMutation();
   const handleDigitClick = (value) => () => {
     setQuantity((quantity) => quantity * 10 + value);
   };
@@ -62,12 +74,19 @@ const AddStockModal = ({ close, notify }) => {
   const handleAddStock = () => {
     console.log(
       "adding stock",
-      meds.filter((med) => med.ID == medId)?.[0]?.NOM_DE_MARQUE
+      meds.filter((med) => med.ID == medId)?.[0]?.MARQUE
     );
-    setMedId(null);
+    addStock({
+      id: auth.value.pharmacie.pharmacie_id,
+      medicament_id: medId,
+      quantity,
+      expiration: eDate,
+    });
+    /* setMedId(null);
     handleResetQuantity();
-    setBarCode({ value: "" });
+    setBarCode({ value: "" }); */
   };
+
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.key.length === 1) {
@@ -101,6 +120,18 @@ const AddStockModal = ({ close, notify }) => {
       setChoose(false);
     }
   }, [choose]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      notify({ type: "success", message: "stock ajouter avec success" });
+      refetch();
+    }
+  }, [isSuccess]);
+  useEffect(() => {
+    if (isError) {
+      notify({ type: "error", message: "Echec d'ajout de stock" });
+    }
+  }, [isError]);
   return (
     <Modal size="md" show>
       <Modal.Header>
@@ -108,149 +139,155 @@ const AddStockModal = ({ close, notify }) => {
         <Button className="btn-close" onClick={handleClose}></Button>
       </Modal.Header>
       <Modal.Body>
-        <Row>
-          <Col className="fieldset">
-            <Stack gap={2}>
-              <InputGroup style={{ width: "100%" }}>
-                <InputGroup.Text>
-                  <CapsulePill size={20} />
-                </InputGroup.Text>
-                <Form.Select
-                  value={medId}
-                  onChange={(e) => setMedId((medId) => e.target.value)}
-                >
-                  {meds.map((med, index) => (
-                    <option key={index} value={med.ID}>
-                      {med.NOM_DE_MARQUE}
-                    </option>
-                  ))}
-                </Form.Select>
+        {isLoading && (
+          <>
+            <span className="text-center"> chargement des medicaments</span>
+            <Row>
+              <Col className="justify-content-center align-items-center">
+                <RotatingLines />
+              </Col>
+            </Row>
+          </>
+        )}
+        {meds && (
+          <Row>
+            <Col className="fieldset">
+              <Stack gap={2}>
+                <InputGroup style={{ width: "100%" }}>
+                  <InputGroup.Text>
+                    <CapsulePill size={20} />
+                  </InputGroup.Text>
+                  <Form.Select
+                    value={medId}
+                    onChange={(e) => setMedId((medId) => e.target.value)}>
+                    <option label="Aucun" />
+                    {meds.map((med, index) => (
+                      <option key={index} value={med.ID}>
+                        {med.MARQUE}
+                      </option>
+                    ))}
+                  </Form.Select>
+
+                  <Form.Control
+                    //hidden
+                    type="number"
+                    placeholder=""
+                    readOnly
+                    value={quantity}
+                  />
+                </InputGroup>
+                <InputGroup>
+                  <InputGroup.Text>EXP:</InputGroup.Text>
+                  <Form.Control
+                    type="date"
+                    onChange={(e) => setEDate(e.target.value)}
+                  />
+                </InputGroup>
 
                 <Form.Control
-                  //hidden
-                  type="number"
-                  placeholder=""
+                  type="text"
+                  value={barCode.value}
+                  //onChange={() => {}}
                   readOnly
-                  value={quantity}
+                  //hidden
                 />
-              </InputGroup>
-              <InputGroup>
-                <InputGroup.Text>EXP:</InputGroup.Text>
-                <Form.Control type="date" />
-              </InputGroup>
-
-              <Form.Control
-                type="text"
-                value={barCode.value}
-                //onChange={() => {}}
-                readOnly
-                //hidden
-              />
-            </Stack>
-            <Row style={{ width: "100%", margin: "auto" }}>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px", borderTopLeftRadius: "5px" }}
-                onClick={handleDigitClick(1)}
-              >
-                1
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(2)}
-              >
-                2
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px", borderTopRightRadius: "5px" }}
-                onClick={handleDigitClick(3)}
-              >
-                3
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(4)}
-              >
-                4
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(5)}
-              >
-                5
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(6)}
-              >
-                6
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(7)}
-              >
-                7
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(8)}
-              >
-                8
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{ borderRadius: "0px" }}
-                onClick={handleDigitClick(9)}
-              >
-                9
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="secondary"
-                onClick={handleResetQuantity}
-                style={{ borderRadius: "0px", borderBottomLeftRadius: "5px" }}
-                disabled={!(quantity > 0)}
-              >
-                C
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="outline-secondary"
-                style={{
-                  borderRadius: "0px",
-                }}
-                onClick={handleDigitClick(0)}
-              >
-                0
-              </Button>
-              <Button
-                className="col-md-4"
-                variant="secondary"
-                style={{ borderRadius: "0px", borderBottomRightRadius: "5px" }}
-                onClick={handleRevertQuantity}
-                disabled={!(quantity > 0)}
-              >
-                {"<<"}
-              </Button>
-            </Row>
-          </Col>
-        </Row>
+              </Stack>
+              <Row style={{ width: "100%", margin: "auto" }}>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px", borderTopLeftRadius: "5px" }}
+                  onClick={handleDigitClick(1)}>
+                  1
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px" }}
+                  onClick={handleDigitClick(2)}>
+                  2
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px", borderTopRightRadius: "5px" }}
+                  onClick={handleDigitClick(3)}>
+                  3
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px" }}
+                  onClick={handleDigitClick(4)}>
+                  4
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px" }}
+                  onClick={handleDigitClick(5)}>
+                  5
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px" }}
+                  onClick={handleDigitClick(6)}>
+                  6
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px" }}
+                  onClick={handleDigitClick(7)}>
+                  7
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px" }}
+                  onClick={handleDigitClick(8)}>
+                  8
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{ borderRadius: "0px" }}
+                  onClick={handleDigitClick(9)}>
+                  9
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="secondary"
+                  onClick={handleResetQuantity}
+                  style={{ borderRadius: "0px", borderBottomLeftRadius: "5px" }}
+                  disabled={!(quantity > 0)}>
+                  C
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="outline-secondary"
+                  style={{
+                    borderRadius: "0px",
+                  }}
+                  onClick={handleDigitClick(0)}>
+                  0
+                </Button>
+                <Button
+                  className="col-md-4"
+                  variant="secondary"
+                  style={{
+                    borderRadius: "0px",
+                    borderBottomRightRadius: "5px",
+                  }}
+                  onClick={handleRevertQuantity}
+                  disabled={!(quantity > 0)}>
+                  {"<<"}
+                </Button>
+              </Row>
+            </Col>
+          </Row>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <Stack direction="horizontal" gap={2}>

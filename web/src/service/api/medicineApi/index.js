@@ -17,10 +17,31 @@ export const medicineApi = createApi({
     fetchMedicine: builder.query({
       query: ({ id }) => ({ url: `/${id}`, method: "GET" }),
     }),
+
+    getStock: builder.query({
+      query: ({ id }) => ({ url: `/getStockList?pharmacie_id=${id}` }),
+    }),
+
     createMedicine: builder.mutation({
       query: (body) => ({
         url: `/`,
         method: "Post",
+        body: body,
+      }),
+    }),
+
+    addStock: builder.mutation({
+      query: (body) => ({
+        url: `/addStock?pharmacie_id=${body.id}`,
+        method: "POST",
+        body: body,
+      }),
+    }),
+
+    addSale: builder.mutation({
+      query: (body) => ({
+        url: `/sale?pharmacie_id=${body.id}`,
+        method: "POST",
         body: body,
       }),
     }),
@@ -37,6 +58,9 @@ export const medicineApi = createApi({
 export const {
   useFetchMedicineQuery,
   useFetchMedicinesQuery,
+  useGetStockQuery,
   useCreateMedicineMutation,
   useDeleteMedicineMutation,
+  useAddStockMutation,
+  useAddSaleMutation,
 } = medicineApi;

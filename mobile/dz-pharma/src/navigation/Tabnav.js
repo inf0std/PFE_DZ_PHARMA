@@ -91,7 +91,7 @@ const BottomTabNavigator = () => {
 
       {/* Map screen */}
       <Tab.Screen
-        name="LocalMap"
+        name="pharmacies à proximié"
         component={LocalMapScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

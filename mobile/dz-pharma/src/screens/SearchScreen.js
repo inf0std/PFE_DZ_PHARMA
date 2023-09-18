@@ -86,6 +86,10 @@ const SearchScreen = ({ navigation }) => {
   useEffect(() => {
     cart.results && dispatch(reset());
   }, []);
+
+  useEffect(() => {
+    cart.meds.length == 0 && setPrescreption([]);
+  }, [cart]);
   return (
     <View style={styles.container}>
       <View
@@ -181,7 +185,7 @@ const SearchScreen = ({ navigation }) => {
                   style={{
                     fontWeight: "bold",
                     fontSize: 18,
-                    alignSelf: "center",
+                    alignSelf: "flex-start",
                     flexDirection: "row",
                     alignItems: "center",
                   }}>

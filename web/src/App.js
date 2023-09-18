@@ -43,12 +43,12 @@ function App() {
           />
           <Route path="medicines" element={<MedicinesPage notify={notify} />} />
         </Route>
-        <Route path="/login" element={<LoginPage notify={notify} />} />
+        <Route path="/" element={<LoginPage notify={notify} />} />
         <Route path="/Map" element={<Map notify={notify} />} />
         <Route path="/Profile" element={<ProfilePage notify={notify} />} />
         <Route path="/SingleUserPage/:id" component={SingleUserPage} />
         <Route path="/Parma" element={<Pharma notify={notify} />} />
-        <Route path="/" element={<CreatePharmacyModal />} />
+        <Route path="/testCreate" element={<CreatePharmacyModal />} />
         <Route
           path="test"
           element={<AddStockModal notify={notify} close={() => {}} />}

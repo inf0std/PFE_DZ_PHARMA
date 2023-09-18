@@ -7,7 +7,7 @@ const knex = require("knex")({
     user: "root",
     password: "",
     database: "Pharma_dz",
-    //port: 3307,
+    port: 3307,
   },
 });
 
@@ -37,7 +37,38 @@ pharmaRouter.post("/", async (req, res) => {
 });
 
 // Route: List all pharmacies
+pharmaRouter.get("/list", async (req, res) => {
+  knex
+    .raw(
+      `
+    SELECT
+        pharmacie_id,
+        (
+            6371 * 
+            acos(
+                cos(radians(${latitude})) *
+                cos(radians(latitude)) *
+                cos(radians(longitude) - radians(${longitude})) +
+                sin(radians(${latitude})) *
+                sin(radians(latitude))
+            )
+        ) AS distance, latitude, longitude, name as nom
+    FROM
+        pharmacie
+    HAVING distance < ${10} `
+    )
+    .then(
+      (
+        results //console.log("distence",
+      ) => res.json(results[0])
+    )
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+});
 pharmaRouter.get("/", async (req, res) => {
+  console.log("paramacies", req.query);
+
   try {
     const pharmacies = await knex("pharmacie").select("*");
     res.json(pharmacies);
@@ -107,8 +138,4 @@ pharmaRouter.delete("/:id", async (req, res) => {
   }
 });
 
-pharmaRouter.post("/:id/addStock", async (req, res) => {
-  try {
-  } catch (e) {}
-});
 module.exports = pharmaRouter;

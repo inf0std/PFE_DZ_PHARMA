@@ -7,7 +7,7 @@ const knex = require("knex")({
     user: "root",
     password: "",
     database: "Pharma_dz",
-    // port: 3307,
+    port: 3307,
   },
 });
 
@@ -97,7 +97,13 @@ medRouter.get("/getStockList", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+medRouter.post("/sale", async (req, res) => {
+  const pharmacie_id = req.query.pharmacie_id;
 
+  const { medicament_id, quantity } = req.body;
+  knex("vente").insert({ pharmacie_id, med_id: medicament_id, quantity });
+  //knex('stock').
+});
 // Search route
 medRouter.get("/searchMed", async (req, res) => {
   const searchText = req.query.q; // Get search query from URL query parameter
@@ -134,23 +140,4 @@ async function getMatchingMedicationsByDCI(ordonnance) {
     throw new Error("An error occurred while retrieving medications.");
   }
 }
-/* 
-async function testFunction() {
-  try {
-    const ordonnance = [
-      { id: 1, denomination_commune_internationale: "Common Name " },
-      { id: 2, denomination_commune_internationale: "Paracetamol" },
-      // ... add more medications
-    ];
-
-    const matchingMedications = await getMatchingMedicationsByDCI(ordonnance);
-
-    console.log("Matching Medications:", matchingMedications);
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
-}
-
-testFunction(); */
-
 module.exports = medRouter;

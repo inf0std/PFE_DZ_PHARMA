@@ -122,23 +122,69 @@ const medIdsFromQuantity = (quantities) => {
     Number.parseInt(key.slice(2))
   );
 };
-
+const colapseToDciQ = (matrix, dcis) => {
+  return matrix.map((row) => {
+    return Object.values(
+      row.reduce((acc, val, i) => {
+        let a = { ...acc };
+        if (acc[dcis[i]]) {
+          a[dcis[i]] = a[dcis[i]] + val;
+          return a;
+        }
+        a[dcis[i]] = val;
+        return a;
+      }, {})
+    );
+  });
+};
+const colapseToDciE = (matrix, dcis) => {
+  return matrix.map((row) => {
+    return Object.values(
+      row.reduce((acc, val, i) => {
+        let a = { ...acc };
+        if (!acc[dcis[i]]) {
+          a[dcis[i]] = val;
+          return a;
+        }
+        a[dcis[i]] = isNaN(val) ? a[dcis[i]] : val;
+        return a;
+      }, {})
+    );
+  });
+};
 const makeSearch = async (req, res) => {
-  console.log(req);
-  console.log(req.body);
+  //console.log(req);
+  //console.log(req.body);
   let pharmacies = await createPharmaDistenceIndex(req.body.position);
-  let quantity = await createIndexFromIDs(req.body.ids, pharmacies);
+  let [quantity, dcis] = await createIndexFromIDs(req.body.ids, pharmacies);
+
+  console.log("\n\n\n\nquantity", quantity, "\n\n\n\n");
+  console.log(
+    Object.values(quantity[0])
+      .filter((_, index) => index % 2 == 1)
+      .reduce((acc, e) => acc + Number.parseInt(e), 0) > 0
+  );
+  quantity = quantity.filter(
+    (list) =>
+      Object.values(list)
+        .filter((_, index) => index % 2 == 1)
+        .reduce((acc, e) => acc + Number.parseInt(e), 0) > 0
+  );
+  console.log(quantity);
+  if (!quantity.length) {
+    res.json({ results: [] });
+    return;
+  }
+  collapsedQ = colapseToDciQ(quantityIndex(quantity), dcis);
+  collapsedE = colapseToDciE(expirationIndex(quantity), dcis);
+  console.log(collapsedQ);
+
   pharmacies = pharmacies.filter((pharma) =>
     quantity.some((_) => _.pharmacie_id == pharma.pharmacie_id)
   );
+  console.log(pharmacies.length);
   res.json({
-    ...finalScore(
-      setCover(quantityIndex(quantity)),
-      expirationIndex(quantity),
-      [],
-      quantityIndex(quantity),
-      pharmacies
-    ),
+    ...finalScore(setCover(collapsedQ), collapsedE, [], collapsedQ, pharmacies),
   });
 };
 

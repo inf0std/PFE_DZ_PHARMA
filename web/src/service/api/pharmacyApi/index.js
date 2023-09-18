@@ -24,14 +24,7 @@ export const pharmacyApi = createApi({
         body: body,
       }),
     }),
-    addStockMutation: builder.mutation({
-      query: (body) => ({
-        url: `/${body.id}/addStock`,
-        method: "POST",
-        body: body,
-      }),
-    }),
-    addSaleMutation: builder.mutation({
+    addSale: builder.mutation({
       query: (body) => ({
         url: `/${body.id}/sale`,
         method: "post",
@@ -50,6 +43,6 @@ export const pharmacyApi = createApi({
 export const {
   useFetchPharmacyQuery,
   useFetchPharmaciesQuery,
-  useCreatepharmacyMutation,
+  useCreatePharmacyMutation,
   useDeletePharmacyMutation,
 } = pharmacyApi;

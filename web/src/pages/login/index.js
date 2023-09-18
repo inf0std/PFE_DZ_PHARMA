@@ -31,11 +31,10 @@ const LoginPage = ({ notify }) => {
       .then((result) => {
         console.log(result);
         sessionStorage.setItem("userId", result.user.user_id); // Assuming the user user_id is available in the result
-
+        notify({ type: "success", message: "Connexion reussie" });
         // Navigate to SingleUserPage with the user's user_id as a parameter
-        navigate(`/Profil/${result.user.user_id}`);
-
-        return notify({ type: "success", message: "Connexion reussie" });
+        result.user.is_admin ? navigate(`/dashboard`) : navigate("/profile");
+        return;
       })
       .catch((e) => {
         console.log(e);

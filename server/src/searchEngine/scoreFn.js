@@ -70,7 +70,9 @@ function sortAndRemoveDuplicates(arrOfArrays) {
 }
 
 const setCover = (matrix) => {
-  const maxCumul = matrix.length > 0 ? matrix[0].length : 0;
+  console.log(matrix);
+  if (matrix.length == 1) return [[0]];
+  //const maxCumul = matrix.length > 0 ? matrix[0].length : 0;
   let chains = matrix.map((_, index) => [index]);
 
   const initialCumuls = chains.map((c, index) => ({
@@ -90,15 +92,13 @@ const setCover = (matrix) => {
   //console.log("best", bestCumuls);
   const indexes = matrix.map((_, i) => i);
 
-  for (let _ = 0; _ < params.getParams().nb_pharma_result_max; _++) {
+  for (
+    let _ = 0;
+    _ < Math.max(matrix[0].length, params.getParams().nb_pharma_result_max);
+    _++
+  ) {
     let addedChains = [];
-    //console.log("________________________________");
-    //console.log("iteration ", _);
-
-    //console.log("________________________________");
     chains.forEach((chain, i_ch) => {
-      //console.log("chain", chain, "index", i_ch);
-      //console.log("________________________________");
       let testCumul = [];
 
       indexes
@@ -111,30 +111,20 @@ const setCover = (matrix) => {
             ).length,
           })
         );
-
-      ////console.log(testCumul);
-      //console.log("________________________________");
+      console.log("indexes", indexes);
+      console.log(testCumul);
       let max = testCumul.reduce(
-        (max, e, index) =>
-          testCumul[max].value > testCumul[index].value ? max : index,
+        (max, e, index) => (testCumul[max].value > e.value ? max : index),
         0
       );
-      /*//console.log(
-        "added",
-        testCumul.filter((test) => test.value == testCumul[max].value)
-      );*/
-      //console.log("testcumul", testCumul[max], "\nbest", bestCumuls[i_ch]);
       addedChains.push([
         i_ch,
-        testCumul[max].value > bestCumuls[i_ch].value
+        max && testCumul[max].value > bestCumuls[i_ch].value
           ? testCumul.filter((test) => test.value == testCumul[max].value)
           : [],
       ]);
     });
-    //console.log("addedchains", addedChains[0][1].length);
-
     chains = addedChains.reduce((acc, elem) => {
-      ////console.log(elem);
       if (elem[1].length == 0) {
         return [...acc, chains[elem[0]]];
       } else {
@@ -216,10 +206,11 @@ const scoreExpiration = (chains, exp, minE) => {
       exp.filter((_, i) => chain.includes(i))
     );
     //console.log(minChain);
+    console.log("e", minChain, minE);
     return (
       minChain.reduce(
         (score, elem, i) =>
-          isNaN(elem) || isNaN(minE[i]) ? score : score + elem / minE[i],
+          isNaN(elem) || isNaN(minE[i]) ? score : score + minE[i] / elem,
         0
       ) / minE.length
     );
@@ -227,14 +218,22 @@ const scoreExpiration = (chains, exp, minE) => {
 };
 
 const finalScore = (chains, exp, dist, quant, pharmacies, mat) => {
+  if (!quant.length) {
+    return { resutlts: [] };
+  }
   let scoreCoeff = params.getParams().coefficients;
   const maxQ = constructMaxQuantityGlobal(quant);
+  const sum = maxQ.reduce((acc, e) => acc + e, 0);
+  console.log("sum", sum);
+  if (!sum) {
+    return { results: [] };
+  }
   const minE = constructMinExpirationGlobal(exp);
-  //console.log("minE", minE);
-  //console.log("maxQ", maxQ);
+
   const scoreQ = scoreQuantity(chains, quant, maxQ);
   const scoreE = scoreExpiration(chains, exp, minE);
   const scoreD = scoreDistence(chains, pharmacies, []);
+  console.log("scores: Q ", scoreQ, ", D ", scoreD, ", E ", scoreE);
 
   let results = scoreD.map((sd, i) => ({
     pharmacies: sd.order.map((o) => o.ph),
@@ -275,7 +274,7 @@ module.exports = {
   setCover,
   finalScore,
 };
-
+/* 
 const test = async () => {
   let pharmacies = await createPharmaDistenceIndex({
     longitude: 4.0,
@@ -286,7 +285,7 @@ const test = async () => {
     quantity.some((_) => _.pharmacie_id == pharma.pharmacie_id)
   );
   let mat = await createPharmaDistenceMatrix(pharmacies);
-  /*//console.log(
+  console.log(
     finalScore(
       setCover(quantityIndex(quantity)),
       expirationIndex(quantity),
@@ -294,7 +293,7 @@ const test = async () => {
       quantityIndex(quantity),
       pharmacies
     )
-  );*/
+  );
 };
 
-test();
+test(); */

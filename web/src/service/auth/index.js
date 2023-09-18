@@ -45,13 +45,10 @@ export const logout = createAsyncThunk("auth/logout", async ({}, thunkAPI) => {
 
 export const signup = createAsyncThunk(
   "auth/signup",
-  async (
-    { firstname, lastname, birth_date, email, password, password2 },
-    thunkAPI
-  ) => {
+  async ({ username, email, password }, thunkAPI) => {
     console.log(thunkAPI);
 
-    console.log(firstname, lastname, email, password, password2, birth_date);
+    //console.log(firstname, lastname, email, password, password2, birth_date);
     try {
       let response = await fetch(API_AUTH_URL + "/signup", {
         method: "POST",
@@ -60,12 +57,9 @@ export const signup = createAsyncThunk(
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          firstname,
-          lastname,
-          birth_date,
+          username,
           email,
           password,
-          password2,
         }),
       });
       let data = await response.json();
@@ -88,6 +82,9 @@ export const authSlice = createSlice({
     loggedOut: (state) => {
       state.value = { ...initialState.value };
     },
+    setPharmacie: (state, { payload }) => {
+      state.value.pharmacie = payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -95,7 +92,8 @@ export const authSlice = createSlice({
         state.value.loginPending = true;
       })
       .addCase(login.fulfilled, (state, { payload }) => {
-        state.value = { ...payload };
+        console.log(payload);
+        state.value = { ...payload.user };
       })
       .addCase(login.rejected, (state) => {
         state.value = { ...initialState.value };
@@ -130,6 +128,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setAuth, loggedOut } = authSlice.actions;
+export const { setAuth, loggedOut, setPharmacie } = authSlice.actions;
 export const { reducer } = authSlice;
 export default authSlice.reducer;

@@ -37,15 +37,15 @@ const quantityIndex = (quantities) => {
 
 const createIndexFromIDs = async (ids, pharmacies) => {
   let list_DCI = await createDCIIndexFromIds(ids);
-  let IDs = await createIndexFromDCIList(list_DCI);
+  const [IDs, dcis] = await createIndexFromDCIList(list_DCI);
 
   let sql = medsPharmaQuantityQuery(IDs, pharmacies);
-  //console.log(sql);
-  return knex
+  const quantity = await knex
     .raw(sql)
     .then((res) => res)
     .then((res) => res[0])
-    .catch((error) => "" /* console.log("error", error )*/);
+    .catch((error) => "");
+  return [quantity, dcis];
 };
 
 const createIndexFromDCIList = async (listDCI) => {
@@ -53,16 +53,15 @@ const createIndexFromDCIList = async (listDCI) => {
     .select("*")
     .whereIn("code", listDCI)
     .then((res) => {
-      return res.map((med) => med.ID);
+      return [res.map((med) => med.ID), res.map((med) => med.CODE)];
     })
     .catch(() => {}); //console.log);
 };
 
 const createPharmaDistenceIndex = (position) => {
-  return (
-    knex
-      .raw(
-        `
+  return knex
+    .raw(
+      `
         SELECT
             pharmacie_id,
             (
@@ -78,19 +77,17 @@ const createPharmaDistenceIndex = (position) => {
         FROM
             pharmacie
         HAVING distance < ${params.getParams().scope} `
-      )
-      .then(
-        (
-          results //console.log("distence",
-        ) => results[0]
-      )
-      //)
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-  );
+    )
+    .then(
+      (
+        results //console.log("distence",
+      ) => results[0]
+    )
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 };
-
+/* 
 const createPharmaDistenceMatrix = async (pharmacies) => {
   let mat = await knex.raw(
     pharmacies
@@ -120,7 +117,7 @@ const createPharmaDistenceMatrix = async (pharmacies) => {
   );
   //console.log(mat);
   return mat[0];
-};
+}; */
 const createDCIIndexFromIds = async (ids) => {
   let DCIs = await knex("medicament").select("code").whereIn("ID", ids);
   return DCIs.map((dci) => dci.code);
@@ -132,5 +129,5 @@ module.exports = {
   createIndexFromIDs,
   createDCIIndexFromIds,
   createPharmaDistenceIndex,
-  createPharmaDistenceMatrix,
+  //createPharmaDistenceMatrix,
 };
